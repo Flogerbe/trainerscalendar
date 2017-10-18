@@ -1,0 +1,21 @@
+{
+  "name": "iris-web-server",
+  "version": "0.0.1",
+  "description": "The serverside for this thing...",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "nodemon": "nodemon app.js"
+  },
+  "author": "Onni Pajumäki",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "crypto-js": "^3.1.9-1",
+    "express": "^4.15.3",
+    "jsonwebtoken": "^7.4.1",
+    "lodash": "^4.17.4",
+    "request": "^2.83.0",
+    "sqlite3": "^3.1.13"
+  }
+}
