@@ -55,8 +55,8 @@ CREATE TABLE event
 );
 
 -- INIT TEST DATA
-insert into user (id,nickname,email,password) values('4f569604-4c57-47b5-81b4-ff2281b26ef3','onni','onni.pajumaki@live.fi','password');
-insert into user (id,nickname,email,password) values('95ffe07b-88bd-483d-ac2e-52d0703c374b','timo','timo.pajumaki@live.com','password');
+insert into user (id,nickname,email,password) values('4f569604-4c57-47b5-81b4-ff2281b26ef3','onni','onni.pajumaki@live.fi','5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8');
+insert into user (id,nickname,email,password) values('95ffe07b-88bd-483d-ac2e-52d0703c374b','timo','timo.pajumaki@live.com','5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8');
 
 insert into role (id,name) values('3f56a760-241f-40ae-9823-9bdc00f5f16c','swimmer');
 insert into role (id,name) values('7beab832-8472-42d1-9372-690f73e5ae2d','coach');
