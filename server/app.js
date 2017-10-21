@@ -27,6 +27,8 @@ const sha256 = require("crypto-js/sha256");
 const config = require('./config'); // Grab the config file
 var request = require('request');
 var _ = require('lodash');
+var swaggerJSDoc = require('swagger-jsdoc');
+var path = require('path');
 
 // Create the 'app' from the express module exports
 var app = express();
@@ -35,6 +37,27 @@ var app = express();
 const restApi = require('./api.js');
 let api = new restApi('./db/tc.db', app, jwt);
 
+// swagger definition
+var swaggerDefinition = {
+    info: {
+      title: 'Node Swagger API',
+      version: '1.0.0',
+      description: 'Demonstrating how to describe a RESTful API with Swagger',
+    },
+    host: 'localhost:3000',
+    basePath: '/',
+  };
+  
+  // options for the swagger docs
+  var swaggerOptions = {
+    // import swaggerDefinitions
+    swaggerDefinition: swaggerDefinition,
+    // path to the API docs
+    apis: ['./app.js'],
+  };
+  
+  // initialize swagger-jsdoc
+  var swaggerSpec = swaggerJSDoc(swaggerOptions);
 // FAKE //
 //const database = require('./fake-database'); // This file emulates the fake database. Remove this line when adding support for a REAL database.
 
@@ -46,6 +69,8 @@ if (enableCors) {
         next();
     });
 }
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Secret stuff...
 app.set('secret', config.secret);
@@ -62,7 +87,70 @@ function findUser(username) {
     return api.getUserByEmail(username);
 }
 
-// For logging in
+// serve swagger
+app.get('/swagger.json', function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerSpec);
+  });
+
+/**
+ * @swagger  
+ * info:
+ *   description: "This is a sample server Petstore server"
+ *   version: "1.0.0"
+ *   title: "Swagger Petstore"
+ *   termsOfService: "http://swagger.io/terms/"
+ *   contact:
+ *     email: "apiteam@swagger.io"
+ *   license:
+ *     name: "Apache 2.0"
+ *     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+ * securityDefinitions:
+ *   api_key:
+ *     type: "apiKey"
+ *     name: "Token"
+ *     in: "header"
+ * definitions:
+ *   User:
+ *     properties:
+ *       id:
+ *         type: string
+ *       email:
+ *         type: string
+ *       nickname:
+ *         type: integer
+ * paths:
+ * /api/login:
+ *   post:
+ *     tags:
+ *       - Login
+ *     description: Login
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: loginData
+ *         description: loginData
+ *         in: body
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successfully created
+ * /api/users:
+ *   get:
+ *     tags:
+ *       - Users
+ *     description: Returns all users
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - api_key: []
+ *     responses:
+ *       200:
+ *         description: An array of users
+*/
+
 apiRoutes.post('/login', (req, res) => {
     findUser(req.body.username)
         .then(result => {
@@ -73,7 +161,7 @@ apiRoutes.post('/login', (req, res) => {
                 if (user.password == sha256(req.body.password).toString()) {
                     // Create jwt
                     var token = jwt.sign(user, app.get('secret'), {
-                        expiresIn: 60 * 60 * config.tokenExpiresInHours
+                        expiresIn: 60* 60* config.tokenExpiresInHours
                     });
 
                     res.json({ success: true, token: token });
@@ -115,7 +203,7 @@ apiRoutes.use(function (req, res, next) {
     }
 });
 
-apiRoutes.get('/users', function (req, res) {
+ apiRoutes.get('/users', function (req, res) {
     api.getUsers()
         .then(result => {
             res.json(result);
