@@ -1,36 +1,23 @@
 {
   "info": {
-    "description": "This is a sample server Petstore server.",
-    "version": "1.0.0",
-    "title": "Swagger Petstore",
-    "termsOfService": "http://swagger.io/terms/",
-    "contact": {
-      "email": "apiteam@swagger.io"
-    }
+    "title": "Trainer Calendar Api",
+    "version": "1.0.0"
   },
-  "securityDefinitions": {
-    "api_key": {
-      "type": "apiKey",
-      "name": "Token",
-      "in": "header"
-    }
-  },
-  "definitions": {
-    "User": {
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "nickname": {
-          "type": "integer"
-        }
-      }
-    }
-  },
+  "swagger": "2.0",
   "paths": {
+    "info": {
+      "description": "This is a sample server Petstore server",
+      "version": "1.0.0",
+      "title": "Swagger Petstore",
+      "termsOfService": "http://swagger.io/terms/",
+      "contact": {
+        "email": "apiteam@swagger.io"
+      },
+      "license": {
+        "name": "Apache 2.0",
+        "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+      }
+    },
     "/api/login": {
       "post": {
         "tags": [
@@ -74,13 +61,35 @@
         ],
         "responses": {
           "200": {
-            "description": "An array of users",
-            "schema": {
-              "$ref": "#/definitions/User"
-            }
+            "description": "An array of users"
           }
         }
       }
     }
-  }
+  },
+  "definitions": {
+    "User": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "nickname": {
+          "type": "integer"
+        }
+      }
+    }
+  },
+  "responses": {},
+  "parameters": {},
+  "securityDefinitions": {
+    "api_key": {
+      "type": "apiKey",
+      "name": "Token",
+      "in": "header"
+    }
+  },
+  "tags": []
 }

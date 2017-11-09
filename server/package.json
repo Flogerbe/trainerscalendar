@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "nodemon": "nodemon app.js"
+    "nodemon": "nodemon app.js",
+    "jsdoc": "swagger-jsdoc-generator jsdoc-config.json > ./public/api-docs/swagger.json"
   },
   "author": "Onni Pajumäki",
   "license": "ISC",
