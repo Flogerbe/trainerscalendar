@@ -1,0 +1,16 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div style="text-align:center">
+  <h1>
+    Welcome to {{title}}!
+  </h1>
+</div>
+Rooli: {{getRole()}}
+<button (click)="isCoach = !isCoach">Vaihda roolia</button>
+<div *ngIf="!isCoach">
+  <app-new-event></app-new-event>
+</div>
+<div *ngIf="isCoach">
+  <app-trainee-list></app-trainee-list>
+</div>
+<app-footer></app-footer>
+
