@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { AppComponent } from './app.component';
 import { NewEventComponent } from './new-event/new-event.component';
@@ -18,7 +18,8 @@ import { HeaderComponent } from './header/header.component';
     HeaderComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    NgbModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

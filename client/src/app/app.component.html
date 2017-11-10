@@ -1,16 +1,55 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
+<app-header></app-header>
+<br>
+<div class='app-content'>
   <h1>
     Welcome to {{title}}!
   </h1>
-</div>
-Rooli: {{getRole()}}
-<button (click)="isCoach = !isCoach">Vaihda roolia</button>
-<div *ngIf="!isCoach">
-  <app-new-event></app-new-event>
-</div>
-<div *ngIf="isCoach">
-  <app-trainee-list></app-trainee-list>
+  Rooli: {{getRole()}}
+  <button (click)="isCoach = !isCoach">Vaihda roolia</button>
+  <div *ngIf="!isCoach">
+    <app-new-event></app-new-event>
+  </div>
+  <div *ngIf='isCoach'>
+    <app-trainee-list></app-trainee-list>
+  </div>
+  <ul>
+    <li>1</li>
+    <li>1</li>
+    <li>1</li>
+    <li>1</li>
+    <li>1</li>
+    <li>2</li>
+    <li>2</li>
+    <li>2</li>
+    <li>2</li>
+    <li>2</li>
+    <li>3</li>
+    <li>3</li>
+    <li>3</li>
+    <li>3</li>
+    <li>3</li>
+    <li>4</li>
+    <li>4</li>
+    <li>4</li>
+    <li>4</li>
+    <li>5</li>
+    <li>5</li>
+    <li>5</li>
+    <li>5</li>
+    <li>5</li>
+    <li>1</li>
+    <li>1</li>
+    <li>1</li>
+    <li>1</li>
+    <li>2</li>
+    <li>2</li>
+    <li>2</li>
+    <li>2</li>
+    <li>3</li>
+    <li>3</li>
+    <li>3</li>
+    <li>3</li>
+  </ul>
 </div>
 <app-footer></app-footer>
-
