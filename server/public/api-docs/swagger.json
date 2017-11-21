@@ -65,6 +65,217 @@
           }
         }
       }
+    },
+    "/api/users/:email": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Returns user by email",
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of users"
+          }
+        }
+      }
+    },
+    "/api/usersGroups/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Returns groups of user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "default": "4f569604-4c57-47b5-81b4-ff2281b26ef3",
+            "description": "user id"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of users groups"
+          }
+        }
+      }
+    },
+    "/api/groups": {
+      "post": {
+        "tags": [
+          "Groups"
+        ],
+        "description": "Add new group. Creator becomes a coach of group.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "groupdata",
+            "description": "Group data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Group"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Rowid of new group"
+          }
+        }
+      }
+    },
+    "/api/groupsUsers/:id": {
+      "get": {
+        "tags": [
+          "Groups"
+        ],
+        "description": "Returns all users in group",
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of users in groups"
+          }
+        }
+      }
+    },
+    "/api/userEvents/:groupId/:id": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "description": "Returns all events of user in group",
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of events of user in group"
+          }
+        }
+      }
+    },
+    "/api/events": {
+      "post": {
+        "tags": [
+          "Events"
+        ],
+        "description": "Add new user event in group",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "event",
+            "description": "Event data",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Event"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Rowid of added event"
+          }
+        }
+      }
+    },
+    "/api/event/:id": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "description": "Get event by id",
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Event"
+          }
+        }
+      }
+    },
+    "/api/joinGroup": {
+      "post": {
+        "tags": [
+          "Groups"
+        ],
+        "description": "Add new group. Creator becomes a coach of group.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "group": "group",
+            "description": "Group to join",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GroupJoin"
+            }
+          }
+        ],
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Rowid of new group"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -78,6 +289,36 @@
         },
         "nickname": {
           "type": "integer"
+        }
+      }
+    },
+    "Event": {
+      "properties": {
+        "group_id": {
+          "type": "string"
+        },
+        "date_time": {
+          "type": "string"
+        },
+        "swim_duration": {
+          "type": "number"
+        },
+        "co_train_duration": {
+          "type": "number"
+        }
+      }
+    },
+    "Group": {
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "GroupJoin": {
+      "properties": {
+        "group_id": {
+          "type": "string"
         }
       }
     }

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { AppComponent } from "../app.component";
+import { AppComponent } from '../app.component';
 
 @Component({
   selector: 'app-trainee-list',
@@ -9,9 +9,20 @@ import { AppComponent } from "../app.component";
   providers: [AppComponent]
 })
 export class TraineeListComponent implements OnInit {
-  
-  constructor(private app: AppComponent) {}
+  app: AppComponent;
+
+  constructor(private theApp: AppComponent) {
+    this.app = theApp;
+  }
 
   ngOnInit() {}
+
+  public getAppInstance(){
+    return this.app;
+  }
+
+  public getAppTitle(){
+    return this.app.title;
+  }
 
 }

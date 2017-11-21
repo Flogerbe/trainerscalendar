@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TraineeListComponent } from './trainee-list.component';
+import { AppComponent } from '../app.component';
 
 describe('TraineeListComponent', () => {
   let component: TraineeListComponent;
@@ -21,5 +22,13 @@ describe('TraineeListComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have appCopmponent in app variable', () => {
+    expect(component.getAppInstance() instanceof AppComponent).toBeTruthy();
+  });
+
+  it('should have deafault role as \'Trainee\'', () => {
+    expect(component.getAppInstance().getRole() === 'Trainee').toBeTruthy();
   });
 });
