@@ -1,0 +1,9 @@
+{
+  "swaggerDefinition": {
+    "info": {
+      "title": "Trainer Calendar Api",
+      "version": "1.0.0"
+    }
+  },
+  "apis": ["routes.js"]
+}
