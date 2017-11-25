@@ -6,8 +6,8 @@
 
 var config = {
     secret: 'ThisIsTheSecretUsedToEncodeTheJsonWebTokensItShouldBeQuiteImpossibleToGuessSoShutUp',
-
-    tokenExpiresInHours: 2
+    tokenExpiresInHours: 2,
+    defaultRoleName: 'user'
 };
 
 module.exports = config;

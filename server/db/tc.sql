@@ -70,8 +70,9 @@ CREATE TABLE event
 insert into user (id,nickname,email,password) values('4f569604-4c57-47b5-81b4-ff2281b26ef3','onni','onni.pajumaki@live.fi','5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8');
 insert into user (id,nickname,email,password) values('95ffe07b-88bd-483d-ac2e-52d0703c374b','timo','timo.pajumaki@live.com','5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8');
 
-insert into role (id,name) values('3f56a760-241f-40ae-9823-9bdc00f5f16c','swimmer');
-insert into role (id,name) values('7beab832-8472-42d1-9372-690f73e5ae2d','coach');
+--insert into role (id,name) values('3f56a760-241f-40ae-9823-9bdc00f5f16c','swimmer');
+--insert into role (id,name) values('7beab832-8472-42d1-9372-690f73e5ae2d','coach');
+insert into role (id,name) values('3f56a760-241f-40ae-9823-9bdc00f5f16c','user');
 insert into role (id,name) values('dc963303-bcad-49f7-bf68-e4650e928b18','admin');
 
 insert into user_role (id,user_id,role_id) values('ec7a38f8-b39c-4bab-83a3-b8bb27690e46','4f569604-4c57-47b5-81b4-ff2281b26ef3','3f56a760-241f-40ae-9823-9bdc00f5f16c');
