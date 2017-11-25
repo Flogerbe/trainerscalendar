@@ -58,6 +58,52 @@ let api = new restApi('./db/tc.db', app, jwt);
  */
 
 /**
+* @swagger  
+* paths:
+*   /api/register:
+*     post:
+*       tags:
+*         - Login
+*       description: Login
+*       produces:
+*         - application/json
+*       parameters:
+*         - name: loginData
+*           description: loginData
+*           in: body
+*           required: true
+*           schema:
+*             type: string
+*       responses:
+*         200:
+*           description: Successfully created
+*/
+router.post('/register', (req, res) => {
+    findUser(req.body.username).then(result => {
+        if (result.message != null) {
+            res.json({ success: false, error: 'User already exists.' });
+        } else {
+            api.addUserAndAttachRole(req.body.username, sha256(req.body.password).toString(), req.body.nickname, config.defaultRoleName).then(result => {
+                let user = req.body;
+                if (result.success === true) {
+                    var token = jwt.sign(user, config.secret, {
+                        expiresIn: 60 * 60 * config.tokenExpiresInHours
+                    });
+
+                    res.json({ success: true, token: token });
+                } else {
+                    res.json({ success: false, message: result.message });
+                }
+            })
+                .catch(err => {
+                    console.log(err);
+                    res.json({ success: false, message: err });
+                })
+        }
+    })
+});
+
+/**
  * @swagger  
  * paths:
  *   /api/login:
@@ -79,23 +125,26 @@ let api = new restApi('./db/tc.db', app, jwt);
  *           description: Successfully created
 */
 router.post('/login', (req, res) => {
-    findUser(req.body.username)
-        .then(result => {
-            let user = result.message;
-            if (user == null) {
-                res.json({ success: false, error: 'No user found.' });
-            } else {
-                if (user.password == sha256(req.body.password).toString()) {
-                    // Create jwt
-                    var token = jwt.sign(user, app.get('secret'), {
-                        expiresIn: 60* 60* config.tokenExpiresInHours
-                    });
+    findUser(req.body.username).then(result => {
+        let user = result.message;
+        if (user == null) {
+            res.json({ success: false, error: 'No user found.' });
+        } else {
+            if (user.password == sha256(req.body.password).toString()) {
+                // Create jwt
+                var token = jwt.sign(user, config.secret, {
+                    expiresIn: 60 * 60 * config.tokenExpiresInHours
+                });
 
-                    res.json({ success: true, token: token });
-                } else {
-                    res.json({ success: false, error: 'Invalid password.' });
-                }
+                res.json({ success: true, token: token });
+            } else {
+                res.json({ success: false, error: 'Invalid password.' });
             }
+        }
+    })
+        .catch(err => {
+            console.log(err);
+            res.json({ success: false, message: err });
         })
 });
 
@@ -103,7 +152,7 @@ router.use(function (req, res, next) {
     var token = req.headers.token || req.body.token || req.query.token || req.headers['x-access-token'];
 
     if (token) {
-        jwt.verify(token, app.get('secret'), function (err, decoded) {
+        jwt.verify(token, config.secret, function (err, decoded) {
             if (err) {
                 return res.json({ success: false, message: 'Invalid token.' });
             } else {
@@ -118,7 +167,7 @@ router.use(function (req, res, next) {
         });
     }
 });
- 
+
 /**
  * @swagger  
  * paths:
@@ -136,14 +185,13 @@ router.use(function (req, res, next) {
  *           description: An array of users
 */
 router.get('/users', function (req, res) {
-    api.getUsers()
-        .then(result => {
-            res.json(result);
-        })
+    api.getUsers().then(result => {
+        res.json(result);
+    })
         .catch(err => {
             console.log(err);
-            res.json(err);
-        });
+            res.json({ success: false, message: err });
+        })
 });
 
 /**
@@ -177,6 +225,10 @@ router.get('/users/:email', function (req, res) {
             res.json({ success: false, message: 'Cannot view other users events' })
         }
     })
+        .catch(err => {
+            console.log(err);
+            res.json({ success: false, message: err });
+        })
 });
 
 /**
@@ -210,8 +262,8 @@ router.get('/usersGroups/:id', function (req, res) {
         })
         .catch(err => {
             console.log(err);
-            res.json(err);
-        });
+            res.json({ success: false, message: err });
+        })
 });
 
 /**
@@ -237,7 +289,7 @@ router.get('/groups', function (req, res) {
         })
         .catch(err => {
             console.log(err);
-            res.json(err);
+            res.json({ success: false, message: err });
         })
 });
 
@@ -261,26 +313,29 @@ router.get('/groupsUsers/:id', function (req, res) {
     let groupId = req.params.id;
 
     // get id of authenticated user (from token)
-    api.getPropertyFromToken(req, 'id')
-        .then(result => {
-            // userId is auth. user id
-            let userId = result.message;
-            api.isCoachOfGroup(userId, groupId)
-                .then(result => {
-                    if (result.message) {
-                        api.getGroupUsers(groupId)
-                            .then(result => {
-                                res.json(result);
-                            })
-                            .catch(err => {
-                                console.log(err);
-                                res.json(err);
-                            });
-                    }
-                    else {
-                        res.json({ success: false, message: 'Not a coach of group.' })
-                    }
-                })
+    api.getPropertyFromToken(req, 'id').then(result => {
+        // userId is auth. user id
+        let userId = result.message;
+        api.isCoachOfGroup(userId, groupId)
+            .then(result => {
+                if (result.message) {
+                    api.getGroupUsers(groupId)
+                        .then(result => {
+                            res.json(result);
+                        })
+                        .catch(err => {
+                            console.log(err);
+                            res.json(err);
+                        });
+                }
+                else {
+                    res.json({ success: false, message: 'Not a coach of group.' })
+                }
+            })
+    })
+        .catch(err => {
+            console.log(err);
+            res.json({ success: false, message: err });
         })
 });
 
@@ -312,7 +367,7 @@ router.get('/userEvents/:groupId/:id', function (req, res) {
         let isMember = result[1].message;
         let isCoachOfGroup = result[2].message;
         let isAdmin = result[3].message;
-        
+
         if ((id === userId) || isCoachOfGroup || isAdmin) {
             api.getUserEvents(groupId, userId)
                 .then(result => {
@@ -327,6 +382,10 @@ router.get('/userEvents/:groupId/:id', function (req, res) {
             res.json({ success: false, message: 'Cannot view other users events' })
         }
     })
+        .catch(err => {
+            console.log(err);
+            res.json({ success: false, message: err });
+        })
 });
 
 /**
@@ -353,18 +412,21 @@ router.get('/userEvents/:groupId/:id', function (req, res) {
  *           description: Rowid of added event
 */
 router.post('/events', (req, res) => {
-    api.getPropertyFromToken(req, 'id')
-        .then(result => {
-            let userId = result.message;
-            let event = req.body;
-            api.addEvent(userId, event)
-                .then(result => {
-                    res.json(result);
-                })
-                .catch(err => {
-                    console.log(err);
-                    res.json(err);
-                })
+    api.getPropertyFromToken(req, 'id').then(result => {
+        let userId = result.message;
+        let event = req.body;
+        api.addEvent(userId, event)
+            .then(result => {
+                res.json(result);
+            })
+            .catch(err => {
+                console.log(err);
+                res.json(err);
+            })
+    })
+        .catch(err => {
+            console.log(err);
+            res.json({ success: false, message: err });
         })
 });
 
@@ -386,21 +448,24 @@ router.post('/events', (req, res) => {
 */
 router.get('/events/:id', function (req, res) {
     let eventId = req.params.id;
-    api.getPropertyFromToken(req, 'id')
-        .then(result => {
-            api.isUsersEvent(result.message, eventId)
-                .then(result => {
-                    if (result.message) {
-                        api.getEvent(eventId)
-                            .then(result => {
-                                res.json(result);
-                            })
-                            .catch(err => {
-                                console.log(err);
-                                res.json(err);
-                            })
-                    }
-                })
+    api.getPropertyFromToken(req, 'id').then(result => {
+        api.isUsersEvent(result.message, eventId)
+            .then(result => {
+                if (result.message) {
+                    api.getEvent(eventId)
+                        .then(result => {
+                            res.json(result);
+                        })
+                        .catch(err => {
+                            console.log(err);
+                            res.json(err);
+                        })
+                }
+            })
+    })
+        .catch(err => {
+            console.log(err);
+            res.json({ success: false, message: err });
         })
 });
 
@@ -428,9 +493,49 @@ router.get('/events/:id', function (req, res) {
  *           description: Rowid of new group
 */
 router.post('/groups', (req, res) => {
-    api.getPropertyFromToken(req, 'id')
-      .then(result => {
-        let userId = result.message;    
+    api.getPropertyFromToken(req, 'id').then(result => {
+        let userId = result.message;
+        api.addGroupAndSetCoach(userId, req.body)
+            .then(result => {
+                res.json(result);
+            })
+            .catch(err => {
+                console.log(err);
+                res.json(err);
+            })
+        })
+        .catch(err => {
+            console.log(err);
+            res.json({ success: false, message: err });
+        })
+})
+
+/**
+ * @swagger  
+ * paths:
+ *   /api/addGroup:
+ *     post:
+ *       tags:
+ *         - Groups
+ *       description: Add new group. Creator becomes a coach of group.
+ *       produces:
+ *         - application/json
+ *       parameters:
+ *         - group: group
+ *           description: Group to join
+ *           in: body
+ *           required: true
+ *           schema:
+ *             $ref: "#/definitions/GroupJoin"
+ *       security:
+ *         - api_key: []
+ *       responses:
+ *         200:
+ *           description: Rowid of new group
+*/
+router.post('/addGroup', (req, res) => {
+    api.getPropertyFromToken(req, 'id').then(result => {
+        let userId = result.message;
         api.addGroupAndSetCoach(userId, req.body)
             .then(result => {
                 res.json(result);
@@ -440,12 +545,16 @@ router.post('/groups', (req, res) => {
                 res.json(err);
             })
     })
+        .catch(err => {
+            console.log(err);
+            res.json({ success: false, message: err });
+        })
 })
 
 /**
  * @swagger  
  * paths:
- *   /api/joinGroup:
+ *   /api/addGroup:
  *     post:
  *       tags:
  *         - Groups
@@ -466,10 +575,9 @@ router.post('/groups', (req, res) => {
  *           description: Rowid of new group
 */
 router.post('/joinGroup', (req, res) => {
-    api.getPropertyFromToken(req, 'id')
-      .then(result => {
-        let userId = result.message;    
-        api.addGroupAndSetCoach(userId, req.body)
+    api.getPropertyFromToken(req, 'id').then(result => {
+        let userId = result.message;
+        api.joinGroup(userId, req.body)
             .then(result => {
                 res.json(result);
             })
@@ -478,7 +586,12 @@ router.post('/joinGroup', (req, res) => {
                 res.json(err);
             })
     })
+        .catch(err => {
+            console.log(err);
+            res.json({ success: false, message: err });
+        })
 })
+
 function findUser(username) {
     return api.getUserByEmail(username);
 }

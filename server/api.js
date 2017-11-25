@@ -12,13 +12,10 @@ module.exports = class Api {
 
     openDb() {
         var sqlite3 = require('sqlite3').verbose();
-
         this.db = new sqlite3.Database(this.dbName, (err) => {
-
             if (err) {
                 console.error(err.message);
             }
-
             console.log('Connected tc database.');
         });
     }
@@ -68,19 +65,75 @@ module.exports = class Api {
         });
     }
 
-    /*
-    print() {
-        this.db.serialize(() => {
-            this.db.each(`SELECT id as id, nickname as name FROM user`, (err, row) => {
-                if (err) {
-                    console.error(err.message);
-                }
-
-                console.log(row.id + "\t" + row.name);
-            });
-        });
+    addUserAndAttachRole(email, password, nickname, roleName) {
+        return new Promise((resolve, reject) => {
+            this.addUser(email, password, nickname).then(result => {
+                let userRowid = result;
+                this.getIdByRowid('user', userRowid).then(result => {
+                    if (result.success === true) {
+                        let userId = result.message;
+                        this.getRoleByName(roleName).then(result => {
+                            let roleId = result.message.id;
+                            this.setRole(userId, roleId).then(result => {
+                                resolve({ success: true, message: `User added and default role set.` });
+                            })
+                        })
+                    }
+                })
+            })
+            .catch(err => {
+                console.log(err);
+                reject(err);                
+            })
+        })
     }
-    */
+
+    getIdByRowid(tableName, rowId){
+        return new Promise((resolve, reject) => {
+            var sql = 'select id from ' + tableName + ' where rowid=?';
+            this.db.serialize(() => {
+                this.db.all(sql, rowId, function cb(err, rows) {
+                    if (err) {
+                        reject({ success: false, message: err });
+                    } else {
+                        resolve({ success: true, message: rows[0].id });
+                    }
+                })
+            })
+        })
+    }
+
+    addUser(email, password, nickname) {
+        return new Promise((resolve, reject) => {
+            let id = guid.raw();
+            let sql = `insert into userx (id,email,password,nickname)  values(?,?,?,?)`;
+            this.db.serialize(() => {
+                this.db.run(sql, [id, email, password, nickname], function cb(err) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(this.lastID);
+                    }
+                })
+            })
+        })
+    }
+
+    setRole(userId, roleId) {
+        return new Promise((resolve, reject) => {
+            let id = guid.raw();
+            let sql = `insert into user_role (id,user_id,role_id)  values(?,?,?)`;
+            this.db.serialize(() => {
+                this.db.run(sql, [id,userId, roleId], function cb(err) {
+                    if (err) {
+                        reject({ success: false, message: err});
+                    } else {
+                        resolve({ success: true, message: 'Role attached to user'});
+                    }
+                })
+            })
+        })
+    }
 
     getUsers() {
         return new Promise((resolve, reject) => {
@@ -113,9 +166,7 @@ module.exports = class Api {
 
     getUserByEmail(email) {
         return new Promise((resolve, reject) => {
-            var sql = `SELECT u.*,r.name role FROM user u  
-            join user_role ur on ur.user_id=u.id
-            join role r on r.id=ur.role_id
+            var sql = `SELECT u.* FROM user u  
             where u.email = ?
             `;
             this.db.serialize(() => {
@@ -133,7 +184,7 @@ module.exports = class Api {
     getUsersGroupsById(id) {
         return new Promise((resolve, reject) => {
             var sql = `SELECT g.id,g.name FROM user u  
-            join user_group ug on ug.user_id=u.id
+            join user_training_group ug on ug.user_id=u.id
             join training_group g on g.id=ug.group_id
             where u.id = ?
             `;
@@ -170,7 +221,7 @@ module.exports = class Api {
     isMemberOfGroup(userId, groupId) {
         return new Promise((resolve, reject) => {
             var sql = `SELECT count(*) value FROM user u  
-            join user_group ug on ug.user_id=u.id
+            join user_training_group ug on ug.user_id=u.id
             join training_group g on g.id=ug.group_id
             where u.id = ? and g.id = ?
             `;
@@ -225,7 +276,7 @@ module.exports = class Api {
     getGroupUsers(id) {
         return new Promise((resolve, reject) => {
             var sql = `SELECT u.id,u.email,u.nickname FROM user u  
-            join user_group ug on ug.user_id=u.id
+            join user_training_group ug on ug.user_id=u.id
             join training_group g on g.id=ug.group_id
             where g.id = ?
             `;
@@ -284,7 +335,7 @@ module.exports = class Api {
                     if (err) {
                         reject({ success: false, message: err});
                     } else {
-                        resolve({ success: true, message: this.lastId});
+                        resolve({ success: true, message: this.lastID});
                     }
                 })
             })
@@ -329,7 +380,7 @@ module.exports = class Api {
                     if (err) {
                         reject({ success: false, message: err });
                     } else {
-                        resolve({ success: true, message: rows });
+                        resolve({ success: true, message: rows[0] });
                     }
                 })
             })
