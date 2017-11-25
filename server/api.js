@@ -1,4 +1,7 @@
 'use strict';
+
+const guid = require('guid');
+
 module.exports = class Api {
     constructor(dbName, app, jwt) {
         this.dbName = dbName;
@@ -9,13 +12,10 @@ module.exports = class Api {
 
     openDb() {
         var sqlite3 = require('sqlite3').verbose();
-
         this.db = new sqlite3.Database(this.dbName, (err) => {
-
             if (err) {
                 console.error(err.message);
             }
-
             console.log('Connected tc database.');
         });
     }
@@ -65,23 +65,79 @@ module.exports = class Api {
         });
     }
 
-    /*
-    print() {
-        this.db.serialize(() => {
-            this.db.each(`SELECT id as id, nickname as name FROM user`, (err, row) => {
-                if (err) {
-                    console.error(err.message);
-                }
-
-                console.log(row.id + "\t" + row.name);
-            });
-        });
+    addUserAndAttachRole(email, password, nickname, roleName) {
+        return new Promise((resolve, reject) => {
+            this.addUser(email, password, nickname).then(result => {
+                let userRowid = result;
+                this.getIdByRowid('user', userRowid).then(result => {
+                    if (result.success === true) {
+                        let userId = result.message;
+                        this.getRoleByName(roleName).then(result => {
+                            let roleId = result.message.id;
+                            this.setRole(userId, roleId).then(result => {
+                                resolve({ success: true, message: `User added and default role set.` });
+                            })
+                        })
+                    }
+                })
+            })
+            .catch(err => {
+                console.log(err);
+                reject(err);                
+            })
+        })
     }
-    */
+
+    getIdByRowid(tableName, rowId){
+        return new Promise((resolve, reject) => {
+            var sql = 'select id from ' + tableName + ' where rowid=?';
+            this.db.serialize(() => {
+                this.db.all(sql, rowId, function cb(err, rows) {
+                    if (err) {
+                        reject({ success: false, message: err });
+                    } else {
+                        resolve({ success: true, message: rows[0].id });
+                    }
+                })
+            })
+        })
+    }
+
+    addUser(email, password, nickname) {
+        return new Promise((resolve, reject) => {
+            let id = guid.raw();
+            let sql = `insert into userx (id,email,password,nickname)  values(?,?,?,?)`;
+            this.db.serialize(() => {
+                this.db.run(sql, [id, email, password, nickname], function cb(err) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(this.lastID);
+                    }
+                })
+            })
+        })
+    }
+
+    setRole(userId, roleId) {
+        return new Promise((resolve, reject) => {
+            let id = guid.raw();
+            let sql = `insert into user_role (id,user_id,role_id)  values(?,?,?)`;
+            this.db.serialize(() => {
+                this.db.run(sql, [id,userId, roleId], function cb(err) {
+                    if (err) {
+                        reject({ success: false, message: err});
+                    } else {
+                        resolve({ success: true, message: 'Role attached to user'});
+                    }
+                })
+            })
+        })
+    }
 
     getUsers() {
         return new Promise((resolve, reject) => {
-            return this.db.serialize(() => {
+            this.db.serialize(() => {
                 this.db.all("SELECT id,email,nickname FROM user", function cb(err, rows) {
                     if (err) {
                         reject({ success: false, message: err });
@@ -110,12 +166,10 @@ module.exports = class Api {
 
     getUserByEmail(email) {
         return new Promise((resolve, reject) => {
-            var sql = `SELECT u.*,r.name role FROM user u  
-            join user_role ur on ur.user_id=u.id
-            join role r on r.id=ur.role_id
+            var sql = `SELECT u.* FROM user u  
             where u.email = ?
             `;
-            return this.db.serialize(() => {
+            this.db.serialize(() => {
                 this.db.all(sql, email, function cb(err, rows) {
                     if (err) {
                         reject({ success: false, message: err});
@@ -134,7 +188,7 @@ module.exports = class Api {
             join training_group g on g.id=ug.group_id
             where u.id = ?
             `;
-            return this.db.serialize(() => {
+            this.db.serialize(() => {
                 this.db.all(sql, id, function cb(err, rows) {
                     if (err) {
                         reject({ success: false, message: err });
@@ -151,8 +205,9 @@ module.exports = class Api {
             var sql = `select count(*) value from event e
             join user u on u.id=e.user_id;
             where u.id = ? and e.id = ?`;
-            return this.db.serialize(() => {
-                this.db.all(sql, [userId, groupId], function cb(err, rows) {
+            sql = `select count(*) value from event e`;
+            this.db.serialize(() => {
+                this.db.all(sql, function cb(err, rows) {
                     if (err) {
                         reject({ success: false, message: err });
                     } else {
@@ -170,7 +225,7 @@ module.exports = class Api {
             join training_group g on g.id=ug.group_id
             where u.id = ? and g.id = ?
             `;
-            return this.db.serialize(() => {
+            this.db.serialize(() => {
                 this.db.all(sql, [userId, groupId], function cb(err, rows) {
                     if (err) {
                         reject({ success: false, message: err });
@@ -182,15 +237,31 @@ module.exports = class Api {
         })
     }
 
+    isAdmin(userId) {
+        return new Promise((resolve, reject) => {
+            var sql = `SELECT count(*) value FROM user u  
+            join user_role ur on ur.user_id=u.id
+            join role r on r.id=ur.role_id
+            where u.id = ? and r.name='admin'`;
+            this.db.serialize(() => {
+                this.db.all(sql, [userId], function cb(err, rows) {
+                    if (err) {
+                        reject({ success: false, message: err });
+                    } else {
+                        resolve({ success: true, message: rows[0].value > 0 ? true : false });
+                    }
+                })
+            })
+        })
+    }
+
     isCoachOfGroup(userId, groupId) {
         return new Promise((resolve, reject) => {
             var sql = `SELECT count(*) value FROM user u  
-            join user_group ug on ug.user_id=u.id
-            join training_group g on g.id=ug.group_id
-            join user_role ur on ur.user_id=u.id
+            join user_role_in_group ur on ur.user_id=u.id
             join role r on r.id=ur.role_id
-            where u.id = ? and g.id = ? and r.name='coach'`;
-            return this.db.serialize(() => {
+            where u.id = ? and ur.group_id = ? and r.name='coach'`;
+            this.db.serialize(() => {
                 this.db.all(sql, [userId, groupId], function cb(err, rows) {
                     if (err) {
                         reject({ success: false, message: err });
@@ -209,7 +280,7 @@ module.exports = class Api {
             join training_group g on g.id=ug.group_id
             where g.id = ?
             `;
-            return this.db.serialize(() => {
+            this.db.serialize(() => {
                 this.db.all(sql, id, function cb(err, rows) {
                     if (err) {
                         reject({ success: false, message: err});
@@ -221,17 +292,50 @@ module.exports = class Api {
         })
     }
 
-    getUserEvents(id) {
+    getEvent(id) {
         return new Promise((resolve, reject) => {
             var sql = `select * from event e
-            join user u on u.id=e.user_id
-            where u.id = ?`;
-            return this.db.serialize(() => {
-                this.db.all(sql, id, function cb(err, rows) {
+            where e.id=?`;
+            this.db.serialize(() => {
+                this.db.all(sql, [id], function cb(err, rows) {
                     if (err) {
                         reject({ success: false, message: err});
                     } else {
                         resolve({ success: true, message: rows});
+                    }
+                })
+            })
+        })
+    }
+
+    getUserEvents(groupId, id) {
+        return new Promise((resolve, reject) => {
+            var sql = `select e.* from event e
+            join user u on u.id=e.user_id
+            where u.id = ? and e.group_id=?`;
+            this.db.serialize(() => {
+                this.db.all(sql, [id, groupId], function cb(err, rows) {
+                    if (err) {
+                        reject({ success: false, message: err});
+                    } else {
+                        resolve({ success: true, message: rows});
+                    }
+                })
+            })
+        })
+    }
+
+    addEvent(userId, event) {
+        return new Promise((resolve, reject) => {
+            let id = guid.raw();
+            let sql = `insert into event (id,user_id,group_id,date_time,swim_duration,co_train_duration) 
+              values(?,?,?,datetime('now'),?,?)`;
+             this.db.serialize(() => {
+                this.db.run(sql, [id, userId, event.group_id, event.swim_duration, event.co_train_duration], function cb(err) {
+                    if (err) {
+                        reject({ success: false, message: err});
+                    } else {
+                        resolve({ success: true, message: this.lastID});
                     }
                 })
             })
@@ -241,12 +345,90 @@ module.exports = class Api {
     getGroups() {
         return new Promise((resolve, reject) => {
             var sql = `SELECT id,name from training_group g`;
-            return this.db.serialize(() => {
+            this.db.serialize(() => {
                 this.db.all(sql, function cb(err, rows) {
                     if (err) {
                         reject({ success: false, message: err });
                     } else {
                         resolve({ success: true, message: rows });
+                    }
+                })
+            })
+        })
+    }
+
+    getGroupByRowid(rowId) {
+        return new Promise((resolve, reject) => {
+            var sql = `SELECT id from training_group g where rowid=?`;
+            this.db.serialize(() => {
+                this.db.all(sql, rowId, function cb(err, rows) {
+                    if (err) {
+                        reject({ success: false, message: err });
+                    } else {
+                        resolve({ success: true, message: rows });
+                    }
+                })
+            })
+        })
+    }
+
+    getRoleByName(roleName) {
+        return new Promise((resolve, reject) => {
+            var sql = `SELECT id from role where name=?`;
+            this.db.serialize(() => {
+                this.db.all(sql, roleName, function cb(err, rows) {
+                    if (err) {
+                        reject({ success: false, message: err });
+                    } else {
+                        resolve({ success: true, message: rows[0] });
+                    }
+                })
+            })
+        })
+    }
+
+    addGroupAndSetCoach(userId, group) {
+        return new Promise((resolve, reject) => {
+            let idPromise = this.addGroup(group).then(result => {
+                this.getGroupByRowid(result.message).then(result => {
+                    let groupId = result.message[0].id;
+                    this.getRoleByName('coach').then(result => {
+                        let roleId = result.message[0].id;
+                        this.addRoleInGroup(userId, groupId,roleId).then(result => {
+                            resolve({ success: true, message: 'New group added'});
+                        }) 
+                    })
+                })
+            })
+        })
+    }
+
+    addGroup(group) {
+        return new Promise((resolve, reject) => {
+            let id = guid.raw();
+            let sql = `insert into training_group (id,name)  values(?,?)`;
+            this.db.serialize(() => {
+                this.db.run(sql, [id, group.name], function cb(err) {
+                    if (err) {
+                        reject({ success: false, message: err});
+                    } else {
+                        resolve({ success: true, message: this.lastID});
+                    }
+                })
+            })
+        })
+    }
+
+    addRoleInGroup(userId, groupId, roleId) {
+        return new Promise((resolve, reject) => {
+            let id = guid.raw();
+            let sql = `insert into user_role_in_group (id,user_id,group_id,role_id)  values(?,?,?,?)`;
+            this.db.serialize(() => {
+                this.db.run(sql, [id, userId, groupId, roleId], function cb(err) {
+                    if (err) {
+                        reject({ success: false, message: err});
+                    } else {
+                        resolve({ success: true, message: 'Group inserted'});
                     }
                 })
             })
