@@ -184,7 +184,7 @@ module.exports = class Api {
     getUsersGroupsById(id) {
         return new Promise((resolve, reject) => {
             var sql = `SELECT g.id,g.name FROM user u  
-            join user_group ug on ug.user_id=u.id
+            join user_training_group ug on ug.user_id=u.id
             join training_group g on g.id=ug.group_id
             where u.id = ?
             `;
@@ -221,7 +221,7 @@ module.exports = class Api {
     isMemberOfGroup(userId, groupId) {
         return new Promise((resolve, reject) => {
             var sql = `SELECT count(*) value FROM user u  
-            join user_group ug on ug.user_id=u.id
+            join user_training_group ug on ug.user_id=u.id
             join training_group g on g.id=ug.group_id
             where u.id = ? and g.id = ?
             `;
@@ -276,7 +276,7 @@ module.exports = class Api {
     getGroupUsers(id) {
         return new Promise((resolve, reject) => {
             var sql = `SELECT u.id,u.email,u.nickname FROM user u  
-            join user_group ug on ug.user_id=u.id
+            join user_training_group ug on ug.user_id=u.id
             join training_group g on g.id=ug.group_id
             where g.id = ?
             `;

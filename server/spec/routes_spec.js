@@ -11,14 +11,16 @@ describe("Should get users", ()  => {
       }
     };
 
-    beforeEach((done) => {
+    beforeAll((done) => {
       // authenticate
       request.post(base_url + 'login', {json: true, body: { "username": "onni.pajumaki@live.fi", "password": "password" }}, (error, response, body) => {
         options.headers.token = body.token;
         done();
       });
+    });
 
-      // get
+    beforeAll((done) => {
+        // get
       request.get(options, (error, response, body) => {
         data.status = response.statusCode;
         data.body = JSON.parse(body);
