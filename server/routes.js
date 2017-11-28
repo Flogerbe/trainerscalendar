@@ -215,15 +215,18 @@ router.get('/users/:email', function (req, res) {
     let idPromise = api.getPropertyFromToken(req, 'id');
     let userByEmailPromise = api.getUserByEmail(email);
     Promise.all([idPromise, userByEmailPromise]).then(result => {
-        let id = result[0].message;
+        let coachId = result[0].message;
         let user = result[1].message;
 
-        if (id === user.id) {
-            res.json(user);
-        }
-        else {
-            res.json({ success: false, message: 'Cannot view other users events' })
-        }
+        api.isCoachOfSwimmer(coachId, user.id).then(result => {
+            let isCoachOfSwimmer = result.message;
+            if (isCoachOfSwimmer || coachId === user.id) {
+                res.json({ success: true, message: user });
+            }
+            else {
+                res.json({ success: false, message: 'Cannot view other users events' })
+            }
+        })
     })
         .catch(err => {
             console.log(err);

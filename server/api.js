@@ -200,6 +200,28 @@ module.exports = class Api {
         })
     }
 
+    isCoachOfSwimmer(coachId, userId) {
+        return new Promise((resolve, reject) => {
+            let sql = `select count(*) count from 
+        (select u.email,tg.id,tg.name,r.name from user u join user_training_group utg on u.id=utg.user_id
+        join user_role_in_group urg on urg.user_id=u.id join training_group tg on tg.id=utg.group_id
+        join role r on r.id=urg.role_id where r.name='coach' and u.id=?) a
+        join (select u.email,tg.id,tg.name,r.name from user u join user_training_group utg on u.id=utg.user_id
+        join user_role_in_group urg on urg.user_id=u.id join training_group tg on tg.id=utg.group_id
+        join role r on r.id=urg.role_id where r.name='swimmer' and u.id=?) b
+        on a.id=b.id`;
+            this.db.serialize(() => {
+                this.db.all(sql, [coachId, userId], function cb(err, rows) {
+                    if (err) {
+                        reject({ success: false, message: err });
+                    } else {
+                        resolve({ success: true, message: rows[0].count > 0 ? true : false });
+                    }
+                })
+            })
+        })
+    }
+
     isUsersEvent(userId, eventId) {
         return new Promise((resolve, reject) => {
             var sql = `select count(*) value from event e
@@ -395,7 +417,7 @@ module.exports = class Api {
                     this.getRoleByName('coach').then(result => {
                         let roleId = result.message[0].id;
                         this.addRoleInGroup(userId, groupId,roleId).then(result => {
-                            resolve({ success: true, message: 'New group added'});
+                            resolve({ success: true, message: { id: groupId }});
                         }) 
                     })
                 })
