@@ -7,7 +7,7 @@
     "start": "node app.js",
     "nodemon": "nodemon app.js",
     "jsdoc": "swagger-jsdoc-generator jsdoc-config.json > ./public/api-docs/swagger.json",
-    "test": "jasmine-node spec"
+    "test": "jasmine"
   },
   "author": "Onni Pajumäki",
   "license": "ISC",
