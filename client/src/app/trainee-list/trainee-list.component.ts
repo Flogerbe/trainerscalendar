@@ -5,24 +5,19 @@ import { AppComponent } from '../app.component';
   selector: 'app-trainee-list',
   templateUrl: './trainee-list.component.html',
   styleUrls: ['./trainee-list.component.css'],
-  encapsulation: ViewEncapsulation.None,
-  providers: [AppComponent]
+  encapsulation: ViewEncapsulation.None
 })
 export class TraineeListComponent implements OnInit {
-  app: AppComponent;
 
-  constructor(private theApp: AppComponent) {
-    this.app = theApp;
+  constructor() {
   }
 
   ngOnInit() {}
 
   public getAppInstance(){
-    return this.app;
   }
 
   public getAppTitle(){
-    return this.app.title;
   }
 
 }

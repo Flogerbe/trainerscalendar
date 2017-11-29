@@ -7,6 +7,8 @@ import { NewEventComponent } from './new-event/new-event.component';
 import { TraineeListComponent } from './trainee-list/trainee-list.component';
 import { FooterComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
+import { EventListComponent } from './event-list/event-list.component';
+import { HttpClientModule } from '@angular/common/http'
 
 
 @NgModule({
@@ -15,10 +17,12 @@ import { HeaderComponent } from './header/header.component';
     NewEventComponent,
     TraineeListComponent,
     FooterComponent,
-    HeaderComponent
+    HeaderComponent,
+    EventListComponent
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     NgbModule.forRoot()
   ],
   providers: [],
