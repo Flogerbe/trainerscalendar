@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ApiService } from './api.service';
 
 @Component({
   selector: 'app-root',
@@ -7,10 +8,22 @@ import { Component } from '@angular/core';
 })
 
 export class AppComponent {
-  title = 'appi';
+  title = '';
+  userName = '';
   isCoach = false;
+  currentState = { userId: '', groupId: '' };
+
+  constructor(private api: ApiService) { }
 
   public getRole() {
-    return this.isCoach ? 'Coach' : 'Trainee';
+    return this.isCoach ? 'Coach' : 'Swimmer';
+  }
+
+  ngOnInit() {
+    let groupId = this.api.getFromStorage('groupId');
+    this.api.getGroup(groupId).subscribe(result => {
+      this.title = this.api.getFromStorage('nickname') + ' / ' + result.name;
+      this.userName = this.api.getFromStorage('nickname');
+    });
   }
 }

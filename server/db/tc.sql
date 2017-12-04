@@ -85,6 +85,7 @@ insert into training_group (id,name) values('331f3a31a-fbbe-493d-ba26-acc1cedeff
 insert into training_group (id,name) values('df90175a-56a6-470e-8bdf-0081a666a3cb','ikm 2');
 
 insert into user_training_group (id,user_id,group_id) values('74e9c59b-00cf-4a5e-b5e0-de29fdf8ab26','4f569604-4c57-47b5-81b4-ff2281b26ef3','331f3a31a-fbbe-493d-ba26-acc1cedeff63');
+insert into user_training_group (id,user_id,group_id) values('74e9c59b-00cf-4a5e-b5e0-de29fdf8ab27','4f569604-4c57-47b5-81b4-ff2281b26ef3','df90175a-56a6-470e-8bdf-0081a666a3cb');
 insert into user_training_group (id,user_id,group_id) values('ce3d90b0-b3fc-46fd-8168-5cf5b8dc7b61','95ffe07b-88bd-483d-ac2e-52d0703c374b','331f3a31a-fbbe-493d-ba26-acc1cedeff63');
 
 insert into event (id,user_id,group_id,date_time,swim_duration,co_train_duration) values('d98bdde8-e591-42cf-9146-e598a14f6783','4f569604-4c57-47b5-81b4-ff2281b26ef3','331f3a31a-fbbe-493d-ba26-acc1cedeff63',datetime('now'),60,15);

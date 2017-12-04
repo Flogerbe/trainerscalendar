@@ -1,3 +1,4 @@
+<button>Uusi</button>
 <div *ngFor="let event of events">
-  {{ event.id }}, {{ event.date_time }}
+  {{ event.id }}, {{ event.date_time }} <button [routerLink]="['/events', event.id]">Muokkaa</button>
 </div>
