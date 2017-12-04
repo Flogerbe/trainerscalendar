@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { TrainigEvent } from '../model';
 import { ApiService } from '../api.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-event',
@@ -13,18 +13,39 @@ export class EventComponent implements OnInit {
 
   event: TrainigEvent;
 
-  constructor(private api: ApiService, private route: ActivatedRoute) { 
+  constructor(private api: ApiService, private route: ActivatedRoute, private router: Router) { 
     this.event = new TrainigEvent({});
   }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       let eventId = params['id'];
-      this.api.getEvent(eventId)
-        .subscribe(result => {
-          this.event = result;
-        });
+
+      if (eventId != 'new'){
+        this.api.getEvent(eventId)
+          .subscribe(result => {
+            this.event = result;
+          });
+      }
     })
   }
+
+  onSubmit(){
+    this.save();
+  }
+
+  save(){
+    if (this.event.id){
+      this.api.updateEvent(this.event.id, this.event).subscribe(result => {
+        this.router.navigate(['/events']);
+      });
+    } else {
+      this.event.group_id = this.api.getFromStorage('groupId');
+      this.api.addEvent(this.event.id, this.event).subscribe(result => {
+        this.router.navigate(['/events']);
+      });
+
+    } 
+   }
 }
 

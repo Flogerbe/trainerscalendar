@@ -445,6 +445,26 @@ router.post('/events/:groupId', (req, res) => {
         })
 });
 
+router.put('/events/:eventId', (req, res) => {
+    api.getPropertyFromToken(req, 'id').then(result => {
+        let userId = result.message;
+        let event = req.body;
+        let eventId = req.params.eventId;
+        api.updateEvent(eventId, event)
+            .then(result => {
+                res.json(result);
+            })
+            .catch(err => {
+                console.log(err);
+                res.json(err);
+            })
+    })
+        .catch(err => {
+            console.log(err);
+            res.json({ success: false, message: err });
+        })
+});
+
 /**
  * @swagger  
  * paths:
