@@ -1,10 +1,32 @@
-  {{event.id}}:
+<div class='container'>
   <form (ngSubmit)='onSubmit()'>
-    <div class='form-group'>
-      <label for='alterEgo'>date_time</label>
-      <input type='date' class='form-control' name='dateTime' [(ngModel)]='event.date_time'>
+    <div class="form-group col-4 offset-4">
+      <label class="float-left" for='dateString'>Pvm:</label>
+      <div class="input-group">
+        <input class="form-control" name='dateString' [(ngModel)]="dateString">
+        <input class="form-control" hidden placeholder="dd-mm-yyyy" name="dp" [(ngModel)]="selectedDate" (ngModelChange)="onDateChange($event)"
+          ngbDatepicker #d="ngbDatepicker">
+        <button class="input-group-addon" (click)="d.toggle()" type="button">
+          <i class="fa fa-calendar" aria-hidden="true"></i>
+        </button>
+      </div>
     </div>
-
-    <button type='submit' class='btn btn-success'>Submit</button>
-
+    <div class="form-group col-4 offset-4">
+      <label class="float-left" for='swimDuration'>Uinnin kesto:</label>
+      <div class="input-group">
+          <i class="fa fa-minus-circle fa-2x" aria-hidden="true" (click)='changeSwimDuration("-")'></i>
+          <input type="number" class="form-control ml-3 mr-3" name='swimDuration' [(ngModel)]="event.swim_duration">
+        <i class="fa fa-plus-circle fa-2x" aria-hidden="true" (click)='changeSwimDuration("+")'></i>
+      </div>
+    </div>
+    <div class="form-group col-4 offset-4">
+        <label class="float-left" for='swimStressLevel'>Uinnin kesto:</label>
+        <div class="input-group">
+            <i class="fa fa-minus-circle fa-2x" aria-hidden="true" (click)='changeSwimStressLevel("-")'></i>
+            <input type="number" class="form-control ml-3 mr-3" name='swimStressLevel' [(ngModel)]="event.swim_stress_level">
+          <i class="fa fa-plus-circle fa-2x" aria-hidden="true" (click)='changeSwimStressLevel("+")'></i>
+        </div>
+      </div>
+      <button type='submit' class='btn btn-success'>Submit</button>
   </form>
+</div>

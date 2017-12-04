@@ -57,6 +57,8 @@ export class TrainigEvent {
     user_id: string;
     group_id: string;
     date_time: Date;
+    swim_duration: number;
+    swim_stress_level: number;
 
     constructor(opts: any) {
         this.id = opts.id;

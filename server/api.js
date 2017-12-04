@@ -365,7 +365,7 @@ module.exports = class Api {
         return new Promise((resolve, reject) => {
             let id = guid.raw();
             let sql = `insert into event (id,user_id,group_id,date_time,swim_duration,co_train_duration) 
-              values(?,?,?,date(?),?,?)`;
+              values(?,?,?,datetime(?,'localtime'),?,?)`;
             this.db.serialize(() => {
                 this.db.run(sql, [id, userId, event.group_id, event.date_time, event.swim_duration, event.co_train_duration], function cb(err) {
                     if (err) {
