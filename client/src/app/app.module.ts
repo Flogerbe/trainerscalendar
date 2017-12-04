@@ -16,7 +16,6 @@ import { FormsModule } from '@angular/forms';
 import { GroupListComponent } from './group-list/group-list.component';
 import { EventComponent } from './event/event.component';
 
-
 const appRoutes: Routes = [
   { path: '', redirectTo: '/', pathMatch: 'full' },
   { path: 'home', redirectTo: '/', pathMatch: 'full' },
@@ -46,7 +45,8 @@ const appRoutes: Routes = [
       appRoutes,
       { enableTracing: true } // <-- debugging purposes only
     ),
-    FormsModule
+    FormsModule,
+    NgbModule.forRoot()
   ],
   providers: [ApiService],
   bootstrap: [AppComponent]
