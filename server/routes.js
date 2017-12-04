@@ -136,7 +136,7 @@ router.post('/login', (req, res) => {
                     expiresIn: 60 * 60 * config.tokenExpiresInHours
                 });
 
-                res.json({ success: true, token: token });
+                res.json({ success: true, userId: user.id, token: token, nickname: user.nickname });
             } else {
                 res.json({ success: false, error: 'Invalid password.' });
             }
@@ -296,6 +296,18 @@ router.get('/groups', function (req, res) {
         })
 });
 
+router.get('/groups/:id', function (req, res) {
+    let groupId = req.params.id;
+    api.getGroup(groupId)
+        .then(result => {
+            res.json(result);
+        })
+        .catch(err => {
+            console.log(err);
+            res.json({ success: false, message: err });
+        })
+});
+
 /**
  * @swagger  
  * paths:
@@ -414,7 +426,7 @@ router.get('/userEvents/:groupId/:id', function (req, res) {
  *         200:
  *           description: Rowid of added event
 */
-router.post('/events', (req, res) => {
+router.post('/events/:groupId', (req, res) => {
     api.getPropertyFromToken(req, 'id').then(result => {
         let userId = result.message;
         let event = req.body;
