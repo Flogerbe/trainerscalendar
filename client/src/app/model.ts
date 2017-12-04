@@ -15,6 +15,11 @@ export class UserResponse {
     message: object;
 }
 
+export class CommonResponse {
+    success: boolean;
+    message: object;
+}
+
 export class LoginResponse {
     success: boolean;
     token: string;

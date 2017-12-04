@@ -81,14 +81,14 @@ module.exports = class Api {
                     }
                 })
             })
-            .catch(err => {
-                console.log(err);
-                reject(err);                
-            })
+                .catch(err => {
+                    console.log(err);
+                    reject(err);
+                })
         })
     }
 
-    getIdByRowid(tableName, rowId){
+    getIdByRowid(tableName, rowId) {
         return new Promise((resolve, reject) => {
             var sql = 'select id from ' + tableName + ' where rowid=?';
             this.db.serialize(() => {
@@ -124,11 +124,11 @@ module.exports = class Api {
             let id = guid.raw();
             let sql = `insert into user_role (id,user_id,role_id)  values(?,?,?)`;
             this.db.serialize(() => {
-                this.db.run(sql, [id,userId, roleId], function cb(err) {
+                this.db.run(sql, [id, userId, roleId], function cb(err) {
                     if (err) {
-                        reject({ success: false, message: err});
+                        reject({ success: false, message: err });
                     } else {
-                        resolve({ success: true, message: 'Role attached to user'});
+                        resolve({ success: true, message: 'Role attached to user' });
                     }
                 })
             })
@@ -157,7 +157,7 @@ module.exports = class Api {
                     if (err) {
                         reject({ success: false, message: err });
                     } else {
-                        resolve({ success: true, message: rows});
+                        resolve({ success: true, message: rows });
                     }
                 })
             })
@@ -172,7 +172,7 @@ module.exports = class Api {
             this.db.serialize(() => {
                 this.db.all(sql, email, function cb(err, rows) {
                     if (err) {
-                        reject({ success: false, message: err});
+                        reject({ success: false, message: err });
                     } else {
                         resolve({ success: true, message: rows[0] });
                     }
@@ -193,7 +193,7 @@ module.exports = class Api {
                     if (err) {
                         reject({ success: false, message: err });
                     } else {
-                        resolve({ success: true, message: rows});
+                        resolve({ success: true, message: rows });
                     }
                 })
             })
@@ -305,9 +305,9 @@ module.exports = class Api {
             this.db.serialize(() => {
                 this.db.all(sql, id, function cb(err, rows) {
                     if (err) {
-                        reject({ success: false, message: err});
+                        reject({ success: false, message: err });
                     } else {
-                        resolve({ success: true, message: rows});
+                        resolve({ success: true, message: rows });
                     }
                 })
             })
@@ -321,11 +321,25 @@ module.exports = class Api {
             this.db.serialize(() => {
                 this.db.all(sql, [id], function cb(err, rows) {
                     if (err) {
-                        reject({ success: false, message: err});
+                        reject({ success: false, message: err });
                     } else {
-                        resolve({ success: true, message: rows[0]});
+                        resolve({ success: true, message: rows[0] });
                     }
                 })
+            })
+        })
+    }
+
+    updateEvent(eventId, event) {
+        return new Promise((resolve, reject) => {
+            var sql = `update event set date_time=?
+            where id=?`;
+            this.db.run(sql, [event.date_time, eventId], function cb(err) {
+                if (err) {
+                    reject({ success: false, message: err });
+                } else {
+                    resolve({ success: true, message: 'updated' });
+                }
             })
         })
     }
@@ -338,9 +352,9 @@ module.exports = class Api {
             this.db.serialize(() => {
                 this.db.all(sql, [id, groupId], function cb(err, rows) {
                     if (err) {
-                        reject({ success: false, message: err});
+                        reject({ success: false, message: err });
                     } else {
-                        resolve({ success: true, message: rows});
+                        resolve({ success: true, message: rows });
                     }
                 })
             })
@@ -351,13 +365,13 @@ module.exports = class Api {
         return new Promise((resolve, reject) => {
             let id = guid.raw();
             let sql = `insert into event (id,user_id,group_id,date_time,swim_duration,co_train_duration) 
-              values(?,?,?,datetime('now'),?,?)`;
-             this.db.serialize(() => {
-                this.db.run(sql, [id, userId, event.group_id, event.swim_duration, event.co_train_duration], function cb(err) {
+              values(?,?,?,date(?),?,?)`;
+            this.db.serialize(() => {
+                this.db.run(sql, [id, userId, event.group_id, event.date_time, event.swim_duration, event.co_train_duration], function cb(err) {
                     if (err) {
-                        reject({ success: false, message: err});
+                        reject({ success: false, message: err });
                     } else {
-                        resolve({ success: true, message: this.lastID});
+                        resolve({ success: true, message: this.lastID });
                     }
                 })
             })
@@ -431,9 +445,9 @@ module.exports = class Api {
                     let groupId = result.message[0].id;
                     this.getRoleByName('coach').then(result => {
                         let roleId = result.message[0].id;
-                        this.addRoleInGroup(userId, groupId,roleId).then(result => {
-                            resolve({ success: true, message: { id: groupId }});
-                        }) 
+                        this.addRoleInGroup(userId, groupId, roleId).then(result => {
+                            resolve({ success: true, message: { id: groupId } });
+                        })
                     })
                 })
             })
@@ -447,9 +461,9 @@ module.exports = class Api {
             this.db.serialize(() => {
                 this.db.run(sql, [id, group.name], function cb(err) {
                     if (err) {
-                        reject({ success: false, message: err});
+                        reject({ success: false, message: err });
                     } else {
-                        resolve({ success: true, message: this.lastID});
+                        resolve({ success: true, message: this.lastID });
                     }
                 })
             })
@@ -463,9 +477,9 @@ module.exports = class Api {
             this.db.serialize(() => {
                 this.db.run(sql, [id, userId, groupId, roleId], function cb(err) {
                     if (err) {
-                        reject({ success: false, message: err});
+                        reject({ success: false, message: err });
                     } else {
-                        resolve({ success: true, message: 'Group inserted'});
+                        resolve({ success: true, message: 'Group inserted' });
                     }
                 })
             })

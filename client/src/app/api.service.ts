@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
-import { TrainingGroupsResponse, TrainingGroup, TrainingEventsResponse, TrainigEvent, LoginResponse, User, UserResponse, TrainingGroupResponse } from './model';
+import { TrainingGroupsResponse, TrainingGroup, TrainingEventsResponse, TrainigEvent, LoginResponse, User, UserResponse, TrainingGroupResponse, CommonResponse } from './model';
 
 const API_URL = environment.apiUrl;
 
@@ -67,6 +67,24 @@ export class ApiService {
       .catch(this.handleError);
   }
 
+  public addEvent(groupId: string, event: TrainigEvent): Observable<string> {
+    return this.http
+      .post<CommonResponse>(API_URL + '/events/' + groupId , event, this.getToken())
+      .map(response => {
+        return response.message;
+      })
+      .catch(this.handleError);
+  }
+
+  public updateEvent(eventId: string, event: TrainigEvent): Observable<string> {
+    return this.http
+      .put<CommonResponse>(API_URL + '/events/' + eventId , event, this.getToken())
+      .map(response => {
+        return response.message;
+      })
+      .catch(this.handleError);
+  }
+
   public getGroups(userId: string): Observable<TrainingGroup[]> {
     return this.http
       .get<TrainingGroupsResponse>(API_URL + '/usersGroups/' + userId, this.getToken())
@@ -86,8 +104,17 @@ export class ApiService {
       .catch(this.handleError);
   }
 
-  private handleError (error: Response | any) {
-    console.error(error);
-    return Observable.throw(error);  
+  public handleError (error: Response | any) {
+    // In a real world app, you might use a remote logging infrastructure
+    let errMsg: string;
+    if (error instanceof Response) {
+      const body = error.json() || '';
+      const err = body || JSON.stringify(body);
+      errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
+    } else {
+      errMsg = error.message ? error.message : error.toString();
+    }
+    console.error(errMsg);
+    return Observable.throw(errMsg);
   }
 }

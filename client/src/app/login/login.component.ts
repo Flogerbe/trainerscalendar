@@ -27,9 +27,7 @@ export class LoginComponent implements OnInit {
   
   login(){
     this.api.login(this.model.username,this.model.password).subscribe(result => {
-      this.app.currentState.userId = result.nickname;
       this.app.title = result.nickname;
-      this.app.userName = result.nickname;
       localStorage.setItem('TrainingCalendarData', JSON.stringify({ userId: result.userId, nickname: result.nickname, token: result.token }));
     });
   }

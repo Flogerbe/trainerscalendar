@@ -1,3 +1,10 @@
-<p>
-  {{event.id}}: {{event.date_time}}
-</p>
+  {{event.id}}:
+  <form (ngSubmit)='onSubmit()'>
+    <div class='form-group'>
+      <label for='alterEgo'>date_time</label>
+      <input type='date' class='form-control' name='dateTime' [(ngModel)]='event.date_time'>
+    </div>
+
+    <button type='submit' class='btn btn-success'>Submit</button>
+
+  </form>
