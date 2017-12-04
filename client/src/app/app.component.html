@@ -3,55 +3,8 @@
 <br>
 <div class='app-content'>
   <h1>
-    Welcome to {{title}}!
+    Welcome to TC {{userName}}
   </h1>
-  Rooli: {{getRole()}}
-  <button (click)="isCoach = !isCoach">Vaihda roolia</button>
-  <div *ngIf="!isCoach">
-    <app-new-event></app-new-event>
-  </div>
-  <div *ngIf='isCoach'>
-    <app-trainee-list></app-trainee-list>
-  </div>
-
-  <app-event-list></app-event-list>
-  <ul>
-    <li>1</li>
-    <li>1</li>
-    <li>1</li>
-    <li>1</li>
-    <li>1</li>
-    <li>2</li>
-    <li>2</li>
-    <li>2</li>
-    <li>2</li>
-    <li>2</li>
-    <li>3</li>
-    <li>3</li>
-    <li>3</li>
-    <li>3</li>
-    <li>3</li>
-    <li>4</li>
-    <li>4</li>
-    <li>4</li>
-    <li>4</li>
-    <li>5</li>
-    <li>5</li>
-    <li>5</li>
-    <li>5</li>
-    <li>5</li>
-    <li>1</li>
-    <li>1</li>
-    <li>1</li>
-    <li>1</li>
-    <li>2</li>
-    <li>2</li>
-    <li>2</li>
-    <li>2</li>
-    <li>3</li>
-    <li>3</li>
-    <li>3</li>
-    <li>3</li>
-  </ul>
+  <router-outlet></router-outlet>
 </div>
 <app-footer></app-footer>

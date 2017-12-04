@@ -323,7 +323,7 @@ module.exports = class Api {
                     if (err) {
                         reject({ success: false, message: err});
                     } else {
-                        resolve({ success: true, message: rows});
+                        resolve({ success: true, message: rows[0]});
                     }
                 })
             })
@@ -369,6 +369,21 @@ module.exports = class Api {
             var sql = `SELECT id,name from training_group g`;
             this.db.serialize(() => {
                 this.db.all(sql, function cb(err, rows) {
+                    if (err) {
+                        reject({ success: false, message: err });
+                    } else {
+                        resolve({ success: true, message: rows });
+                    }
+                })
+            })
+        })
+    }
+
+    getGroup(groupId) {
+        return new Promise((resolve, reject) => {
+            var sql = `SELECT id,name from training_group g where id=?`;
+            this.db.serialize(() => {
+                this.db.all(sql, groupId, function cb(err, rows) {
                     if (err) {
                         reject({ success: false, message: err });
                     } else {
