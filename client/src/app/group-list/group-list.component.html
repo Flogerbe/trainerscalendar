@@ -1,3 +1,13 @@
-<div *ngFor="let group of groups">
-  {{ group.id }}, {{ group.name }} <button (click)='goToEvents(group.id)'>Valitse</button>
+<h2>
+  Ryhmät
+</h2>
+<div class='container col-4 col-md-2'>
+  <div *ngFor="let group of groups" class='row mt-1'>
+    <div class='col col-8 text-align-left'>
+      {{ group.name }}
+    </div>
+    <div class='col col-4 text-align-left'>
+      <button (click)='goToEvents(group.id)' class='btn btn-success btn-primary-spacing'>Valitse</button>
+    </div>
+  </div>
 </div>

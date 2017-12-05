@@ -14,7 +14,7 @@ html {
 }
 body {
     min-height: 100%;
-    margin: 0;
+    margin-bottom: 70px;
 }
 
 .app-content {
@@ -30,3 +30,22 @@ body {
     background: rgba(51,51,51,0.7);
     z-index: 10;
   }
+
+.text-align-left {
+    text-align: left;
+}
+
+.border-top {
+    border-width: 1px 0 0 0;
+    border-style: solid;
+}
+
+.border-bottom {
+    border-width: 0 0 1px 0;
+    border-style: solid;
+}
+
+.border-top-bottom {
+    border-width: 1px 0 1px 0;
+    border-style: solid;
+}
