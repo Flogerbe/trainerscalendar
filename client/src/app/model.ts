@@ -58,13 +58,23 @@ export class TrainigEvent {
     group_id: string;
     date_time: Date;
     swim_duration: number;
-    swim_stress_level: number;
+    co_train_duration: number;
+    stress_level: number;
+    nutrition: number;
+    sleep:  number;
+    remarks: string;
 
     constructor(opts: any) {
         this.id = opts.id;
         this.user_id = opts.user_id;
         this.group_id = opts.group_id;
         this.date_time = opts.date_time;
+        this.swim_duration = opts.swim_duration;
+        this.co_train_duration = opts.co_train_duration;
+        this.stress_level = opts.stress_level;
+        this.nutrition = opts.nutrition;
+        this.sleep = opts.sleep;
+        this.remarks = opts.remarks;
     }
 }
 

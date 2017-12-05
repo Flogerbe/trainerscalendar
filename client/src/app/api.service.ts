@@ -85,6 +85,15 @@ export class ApiService {
       .catch(this.handleError);
   }
 
+  public deleteEvent(eventId: string): Observable<string> {
+    return this.http
+      .delete<CommonResponse>(API_URL + '/events/' + eventId , this.getToken())
+      .map(response => {
+        return response.message;
+      })
+      .catch(this.handleError);
+  }
+
   public getGroups(userId: string): Observable<TrainingGroup[]> {
     return this.http
       .get<TrainingGroupsResponse>(API_URL + '/usersGroups/' + userId, this.getToken())

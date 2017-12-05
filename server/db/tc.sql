@@ -62,6 +62,10 @@ CREATE TABLE event
    date_time          datetime,
    swim_duration      number,
    co_train_duration  number,
+   stress_level  number,
+   nutrition  number,
+   sleep  number,
+   remarks  char(1000),
    FOREIGN KEY(user_id) REFERENCES user(id),
    FOREIGN KEY(group_id) REFERENCES training_group(id)
 );
@@ -88,5 +92,5 @@ insert into user_training_group (id,user_id,group_id) values('74e9c59b-00cf-4a5e
 insert into user_training_group (id,user_id,group_id) values('74e9c59b-00cf-4a5e-b5e0-de29fdf8ab27','4f569604-4c57-47b5-81b4-ff2281b26ef3','df90175a-56a6-470e-8bdf-0081a666a3cb');
 insert into user_training_group (id,user_id,group_id) values('ce3d90b0-b3fc-46fd-8168-5cf5b8dc7b61','95ffe07b-88bd-483d-ac2e-52d0703c374b','331f3a31a-fbbe-493d-ba26-acc1cedeff63');
 
-insert into event (id,user_id,group_id,date_time,swim_duration,co_train_duration) values('d98bdde8-e591-42cf-9146-e598a14f6783','4f569604-4c57-47b5-81b4-ff2281b26ef3','331f3a31a-fbbe-493d-ba26-acc1cedeff63',datetime('now'),60,15);
-insert into event (id,user_id,group_id,date_time,swim_duration,co_train_duration) values('4f569604-4c57-47b5-81b4-ff2281b26ef3','4f569604-4c57-47b5-81b4-ff2281b26ef3','331f3a31a-fbbe-493d-ba26-acc1cedeff63',datetime('now'),60,15);
+insert into event (id,user_id,group_id,date_time,swim_duration,co_train_duration, stress_level, nutrition, sleep, remarks) values('d98bdde8-e591-42cf-9146-e598a14f6783','4f569604-4c57-47b5-81b4-ff2281b26ef3','331f3a31a-fbbe-493d-ba26-acc1cedeff63',datetime('now'),60,15,3,4,4,'kivaa');
+insert into event (id,user_id,group_id,date_time,swim_duration,co_train_duration, stress_level, nutrition, sleep, remarks) values('4f569604-4c57-47b5-81b4-ff2281b26ef3','4f569604-4c57-47b5-81b4-ff2281b26ef3','331f3a31a-fbbe-493d-ba26-acc1cedeff63',datetime('now'),60,15,2,5,4,'kivaa taas');

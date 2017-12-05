@@ -1,4 +1,18 @@
-<button [routerLink]="['/events', 'new']">Uusi</button>
-<div *ngFor="let event of events">
-  {{ event.id }}, {{ event.date_time }} <button [routerLink]="['/events', event.id]">Muokkaa</button>
+<div class='container col-lg-6'>
+    <div class=' border-bottom'>
+        <h2>
+          Tapahtumat
+          <button [routerLink]="['/events', 'new']" class='btn btn-success btn-primary-spacing'>
+            <i class="fa fa-plus-circle fa-1x" aria-hidden="true"></i> Uusi</button>
+        </h2>
+      </div>
+        <div *ngFor="let event of events" class='row mt-1'>
+    <div class='col col-6 text-align-left'>
+      {{ getDayOfWeek(event.date_time) }} {{ getDateStr(event.date_time) }}
+    </div>
+    <div class='row'>
+      <button [routerLink]='["/events", event.id]' class='btn btn-success btn-primary-spacing'>Muokkaa</button>
+      <button (click)='deleteEvent(event.id)' class='ml-1 btn btn-success btn-primary-spacing'>Poista</button>
+    </div>
+  </div>
 </div>

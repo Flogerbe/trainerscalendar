@@ -1,6 +1,6 @@
-<div class='container'>
+<div class='container-fluid'>
   <form (ngSubmit)='onSubmit()'>
-    <div class="form-group col-4 offset-4">
+    <div class="form-group col-8 col-md-4 offset-2 offset-md-4">
       <label class="float-left" for='dateString'>Pvm:</label>
       <div class="input-group">
         <input class="form-control" name='dateString' [(ngModel)]="dateString">
@@ -11,22 +11,50 @@
         </button>
       </div>
     </div>
-    <div class="form-group col-4 offset-4">
+    <div class="form-group col-8 col-md-4 offset-2 offset-md-4">
       <label class="float-left" for='swimDuration'>Uinnin kesto:</label>
       <div class="input-group">
-          <i class="fa fa-minus-circle fa-2x" aria-hidden="true" (click)='changeSwimDuration("-")'></i>
-          <input type="number" class="form-control ml-3 mr-3" name='swimDuration' [(ngModel)]="event.swim_duration">
-        <i class="fa fa-plus-circle fa-2x" aria-hidden="true" (click)='changeSwimDuration("+")'></i>
+        <i class="fa fa-minus-circle fa-2x" aria-hidden="true" (click)='changeAttrValue("swim_duration", 15, 0, 210, "-")'></i>
+        <input type="number" class="form-control ml-3 mr-3" name='swimDuration' [(ngModel)]="event.swim_duration">
+        <i class="fa fa-plus-circle fa-2x" aria-hidden="true" (click)='changeAttrValue("swim_duration", 15, 0, 200, "+")'></i>
       </div>
     </div>
-    <div class="form-group col-4 offset-4">
-        <label class="float-left" for='swimStressLevel'>Uinnin kesto:</label>
+    <div class="form-group col-8 col-md-4 offset-2 offset-md-4">
+      <label class="float-left" for='swimDuration'>Kuivan kesto:</label>
+      <div class="input-group">
+        <i class="fa fa-minus-circle fa-2x" aria-hidden="true" (click)='changeAttrValue("co_train_duration", 15, 0, 60, "-")'></i>
+        <input type="number" class="form-control ml-3 mr-3" name='coTrainDuration' [(ngModel)]="event.co_train_duration">
+        <i class="fa fa-plus-circle fa-2x" aria-hidden="true" (click)='changeAttrValue("co_train_duration", 15, 0, 60, "+")'></i>
+      </div>
+    </div>
+    <div class="form-group col-8 col-md-4 offset-2 offset-md-4">
+        <label class="float-left" for='swimDuration'>Rasitustaso:</label>
         <div class="input-group">
-            <i class="fa fa-minus-circle fa-2x" aria-hidden="true" (click)='changeSwimStressLevel("-")'></i>
-            <input type="number" class="form-control ml-3 mr-3" name='swimStressLevel' [(ngModel)]="event.swim_stress_level">
-          <i class="fa fa-plus-circle fa-2x" aria-hidden="true" (click)='changeSwimStressLevel("+")'></i>
+          <i class="fa fa-minus-circle fa-2x" aria-hidden="true" (click)='changeAttrValue("stress_level", 1, 1, 5, "-")'></i>
+          <input type="number" class="form-control ml-3 mr-3" name='stressLevel' [(ngModel)]="event.stress_level">
+          <i class="fa fa-plus-circle fa-2x" aria-hidden="true" (click)='changeAttrValue("stress_level", 1, 1, 5, "+")'></i>
         </div>
       </div>
-      <button type='submit' class='btn btn-success'>Submit</button>
+      <div class="form-group col-8 col-md-4 offset-2 offset-md-4">
+      <label class="float-left" for='swimStressLevel'>Ruoka:</label>
+      <div class="input-group">
+        <i class="fa fa-minus-circle fa-2x" aria-hidden="true" (click)='changeAttrValue("nutrition", 1, 1, 5, "-")'></i>
+        <input type="number" class="form-control ml-3 mr-3" name='nutrition' [(ngModel)]="event.nutrition">
+        <i class="fa fa-plus-circle fa-2x" aria-hidden="true" (click)='changeAttrValue("nutrition", 1, 1, 5, "+")'></i>
+      </div>
+    </div>
+    <div class="form-group col-8 col-md-4 offset-2 offset-md-4">
+      <label class="float-left" for='swimStressLevel'>Uni:</label>
+      <div class="input-group">
+        <i class="fa fa-minus-circle fa-2x" aria-hidden="true" (click)='changeAttrValue("sleep", 1, 1, 5, "-")'></i>
+        <input type="number" class="form-control ml-3 mr-3" name='sleep' [(ngModel)]="event.sleep">
+        <i class="fa fa-plus-circle fa-2x" aria-hidden="true" (click)='changeAttrValue("sleep", 1, 1, 5, "+")'></i>
+      </div>
+    </div>
+    <div class="form-group col-8 col-md-4 offset-2 offset-md-4">
+      <label class="float-left" for='swimStressLevel'>Muuta:</label>
+      <input type="text" class="form-control ml-3 mr-3" name='remarks' [(ngModel)]="event.remarks">
+    </div>
+    <button type='submit' class='btn btn-success'>Submit</button>
   </form>
 </div>

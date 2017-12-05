@@ -465,6 +465,24 @@ router.put('/events/:eventId', (req, res) => {
         })
 });
 
+router.delete('/events/:eventId', (req, res) => {
+    api.getPropertyFromToken(req, 'id').then(result => {
+        let userId = result.message;
+        let eventId = req.params.eventId;
+        api.deleteEvent(eventId)
+            .then(result => {
+                res.json(result);
+            })
+            .catch(err => {
+                console.log(err);
+                res.json(err);
+            })
+    })
+        .catch(err => {
+            console.log(err);
+            res.json({ success: false, message: err });
+        })
+});
 /**
  * @swagger  
  * paths:

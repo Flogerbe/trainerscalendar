@@ -13,25 +13,25 @@ import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 export class EventComponent implements OnInit {
 
   event: TrainigEvent;
-  dateString: string = '1.1.2011';
+  dateString: string;
   selectedDate;
 
-  constructor(private api: ApiService, private route: ActivatedRoute, private router: Router) { 
-    this.event = new TrainigEvent({});
-    this.event.date_time = new Date();
-    this.event.swim_duration = 60;
-    this.event.swim_stress_level = 3;
-    this.dateString = this.event.date_time.getDate() + '.' + (this.event.date_time.getMonth() + 1) + '.' + this.event.date_time.getFullYear();
-  }
+  constructor(private api: ApiService, private route: ActivatedRoute, private router: Router) {
+    this.event = new TrainigEvent({ date_time: new Date(), swim_duration: 60, co_train_duration: 30, stress_level: 3, nutrition: 3, sleep: 4 });
+    let d = new Date();
+    this.dateString = d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear();
+}
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       let eventId = params['id'];
 
-      if (eventId != 'new'){
+      if (eventId != 'new') {
         this.api.getEvent(eventId)
           .subscribe(result => {
             this.event = result;
+            let d = new Date(this.event.date_time);
+            this.dateString = d.getDate() + '.' + (d.getMonth() + 1) + '.' + d.getFullYear();
           });
       }
     })
@@ -40,42 +40,25 @@ export class EventComponent implements OnInit {
   onDateChange(date: NgbDateStruct) {
     console.log(date);
     this.dateString = `${date.day}.${date.month}.${date.year}`;
-    this.event.date_time = new Date(date.year, date.month-1, date.day);
-  
+    this.event.date_time = new Date(date.year, date.month - 1, date.day);
+
   }
 
-  changeSwimDuration(direction){
-    const step = 15;
-    const min = 1;
-    const max = 300;
-
-    if (direction === '+' && this.event.swim_stress_level < max) {
-      this.event.swim_duration += step;
+  changeAttrValue(attr: string, step: number, min: number, max: number, direction: string) {
+    if (direction === '+' && this.event[attr] < max) {
+      this.event[attr] += step;
     }
-    else if (direction === '-' && this.event.swim_stress_level > min) {
-      this.event.swim_duration -= step;
+    else if (direction === '-' && this.event[attr] > min) {
+      this.event[attr] -= step;
     }
   }
 
-  changeSwimStressLevel(direction){
-    const step = 1;
-    const min = 1;
-    const max = 5;
-
-    if (direction === '+' && this.event.swim_stress_level < max) {
-      this.event.swim_stress_level += step;
-    }
-    else if (direction === '-' && this.event.swim_stress_level > min) {
-      this.event.swim_stress_level -= step;
-    }
-  }
-
-  onSubmit(){
+  onSubmit() {
     this.save();
   }
 
-  save(){
-    if (this.event.id){
+  save() {
+    if (this.event.id) {
       this.api.updateEvent(this.event.id, this.event).subscribe(result => {
         this.router.navigate(['/events']);
       });
@@ -85,7 +68,7 @@ export class EventComponent implements OnInit {
         this.router.navigate(['/events']);
       });
 
-    } 
-   }
+    }
+  }
 }
 

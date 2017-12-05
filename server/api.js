@@ -332,13 +332,28 @@ module.exports = class Api {
 
     updateEvent(eventId, event) {
         return new Promise((resolve, reject) => {
-            var sql = `update event set date_time=?
+            var sql = `update event set date_time=datetime(?,'localtime'),
+            swim_duration=?,co_train_duration=?,stress_level=?,nutrition=?,sleep=?,remarks=?
             where id=?`;
-            this.db.run(sql, [event.date_time, eventId], function cb(err) {
+            this.db.run(sql, [event.date_time, event.swim_duration, event.co_train_duration, 
+                event.stress_level, event.nutrition, event.sleep, event.remarks, eventId], function cb(err) {
                 if (err) {
                     reject({ success: false, message: err });
                 } else {
                     resolve({ success: true, message: 'updated' });
+                }
+            })
+        })
+    }
+
+    deleteEvent(eventId) {
+        return new Promise((resolve, reject) => {
+            var sql = `delete from event where id=?`;
+            this.db.run(sql, [eventId], function cb(err) {
+                if (err) {
+                    reject({ success: false, message: err });
+                } else {
+                    resolve({ success: true, message: 'deleted' });
                 }
             })
         })
@@ -364,10 +379,12 @@ module.exports = class Api {
     addEvent(userId, event) {
         return new Promise((resolve, reject) => {
             let id = guid.raw();
-            let sql = `insert into event (id,user_id,group_id,date_time,swim_duration,co_train_duration) 
-              values(?,?,?,datetime(?,'localtime'),?,?)`;
+            let sql = `insert into event (id,user_id,group_id,date_time,swim_duration,co_train_duration,
+            stress_level,nutrition,sleep,remarks) 
+              values(?,?,?,datetime(?,'localtime'),?,?,?,?,?,?)`;
             this.db.serialize(() => {
-                this.db.run(sql, [id, userId, event.group_id, event.date_time, event.swim_duration, event.co_train_duration], function cb(err) {
+                this.db.run(sql, [id, userId, event.group_id, event.date_time, event.swim_duration, event.co_train_duration,
+                    event.stress_level,event.nutrition,event.sleep,event.remarks], function cb(err) {
                     if (err) {
                         reject({ success: false, message: err });
                     } else {

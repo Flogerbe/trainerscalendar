@@ -10,24 +10,48 @@ import { TrainigEvent } from '../model'
   encapsulation: ViewEncapsulation.None,
 })
 
-export class EventListComponent implements OnInit {
 
+export class EventListComponent implements OnInit {
+  
   events: TrainigEvent[];
+  userId: string;
+  groupId: string;
+  weekdays: string[] = ['ma', 'ti', 'ke', 'to', 'pe', 'la', 'su'];
+
 
   constructor(private api: ApiService) {
   }
 
   ngOnInit() {
     const data = JSON.parse(localStorage.getItem('TrainingCalendarData'));
-    let userId = data.userId;
-    let groupId = data.groupId;
+    this.userId = data.userId;
+    this.groupId = data.groupId;
 
-    if (userId && groupId) {
-      this.api.getEvents(groupId, userId)
+    if (this.userId && this.groupId) {
+      this.api.getEvents(this.groupId, this.userId)
         .subscribe(result => {
           this.events = result;
         });
     }
+  }
+
+  deleteEvent(id: string){
+    this.api.deleteEvent(id)
+    .subscribe(result => {
+      this.api.getEvents(this.groupId, this.userId)
+        .subscribe(result => {
+          this.events = result;
+        });
+    });
+  }
+
+  getDateStr(date: string) {
+    let d: Date = new Date(date);
+    return d.getDate() + '.' + (d.getMonth()+1) + '.' + d.getFullYear();
+  }
+
+  getDayOfWeek(date: string) {
+    return this.weekdays[new Date(date).getDay()];
   }
 }
 
