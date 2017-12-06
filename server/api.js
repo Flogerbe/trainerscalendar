@@ -376,6 +376,23 @@ module.exports = class Api {
         })
     }
 
+    getGroupEvents(groupId) {
+        return new Promise((resolve, reject) => {
+            var sql = `select e.* from event e
+            join user u on u.id=e.user_id
+            where e.group_id=?`;
+            this.db.serialize(() => {
+                this.db.all(sql, [id, groupId], function cb(err, rows) {
+                    if (err) {
+                        reject({ success: false, message: err });
+                    } else {
+                        resolve({ success: true, message: rows });
+                    }
+                })
+            })
+        })
+    }
+
     addEvent(userId, event) {
         return new Promise((resolve, reject) => {
             let id = guid.raw();

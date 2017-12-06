@@ -12,6 +12,8 @@ export class AppComponent {
   userName = '';
   isCoach = false;
   currentState = { userId: '', groupId: '' };
+  alertMessage: string;
+  showAlert: boolean = false;
 
   constructor(private api: ApiService) { }
 

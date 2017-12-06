@@ -2,6 +2,7 @@
 <app-header></app-header>
 <br>
 <div class='app-content'>
+  <ngb-alert *ngIf="showAlert" type='danger' (close)="alertMessage = null">{{ alertMessage }}</ngb-alert>
   <router-outlet></router-outlet>
 </div>
 <app-footer></app-footer>
