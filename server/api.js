@@ -378,11 +378,11 @@ module.exports = class Api {
 
     getGroupEvents(groupId) {
         return new Promise((resolve, reject) => {
-            var sql = `select e.* from event e
+            var sql = `select e.*,u.nickname from event e
             join user u on u.id=e.user_id
             where e.group_id=?`;
             this.db.serialize(() => {
-                this.db.all(sql, [id, groupId], function cb(err, rows) {
+                this.db.all(sql, [groupId], function cb(err, rows) {
                     if (err) {
                         reject({ success: false, message: err });
                     } else {

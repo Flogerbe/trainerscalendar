@@ -25,7 +25,8 @@ const appRoutes: Routes = [
   { path: 'groups', component: GroupListComponent },
   { path: 'events', component: EventListComponent },
   { path: 'events/:id', component: EventComponent },
-  { path: 'info', component: InfoComponent }
+  { path: 'info', component: InfoComponent },
+  { path: 'reports', component: ReportComponent }
 ];
 
 @NgModule({

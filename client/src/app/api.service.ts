@@ -113,6 +113,15 @@ export class ApiService {
       .catch(this.handleError);
   }
 
+  public getReportData(groupId: string): Observable<any> {
+    return this.http
+      .get<CommonResponse>(API_URL + '/groupEvents/' + groupId, this.getToken())
+      .map(response => {
+        return response.message;
+      })
+      .catch(this.handleError);
+  }
+
   public handleError (error: Response | any) {
     // In a real world app, you might use a remote logging infrastructure
     let errMsg: string;
