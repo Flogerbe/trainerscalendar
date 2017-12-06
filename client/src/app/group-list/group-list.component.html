@@ -1,8 +1,10 @@
-<h2>
-  Ryhmät
-</h2>
-<div class='container col-4 col-md-2'>
-  <div *ngFor="let group of groups" class='row mt-1'>
+<div class='border-bottom pt-2'>
+  <h5>
+    Ryhmät
+  </h5>
+</div>
+<div class='container col-4 col-md-2 pt-1'>
+  <div *ngFor="let group of groups" class='row pb-1'>
     <div class='col col-8 text-align-left'>
       {{ group.name }}
     </div>

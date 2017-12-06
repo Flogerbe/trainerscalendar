@@ -403,6 +403,37 @@ router.get('/userEvents/:groupId/:id', function (req, res) {
         })
 });
 
+router.get('/groupEvents/:groupId', function (req, res) {
+    let groupId = req.params.groupId;
+    let idPromise = api.getPropertyFromToken(req, 'id').then(result => {
+        let userId = result.message;    
+        let isCoachOfGroupPromise = api.isCoachOfGroup(userId, groupId);
+        let isAdminPromise = api.isAdmin(userId);
+        Promise.all([isCoachOfGroupPromise, isAdminPromise]).then(result => {
+            let isCoachOfGroup = result[0].message;
+            let isAdmin = result[1].message;
+            
+            if (isCoachOfGroup || isAdmin) {
+                api.getGroupEvents(groupId)
+                .then(result => {
+                    res.json(result);
+                })
+                .catch(err => {
+                    console.log(err);
+                    res.json(err);
+                })
+            }
+            else {
+                res.json({ success: false, message: 'Cannot view other users events' })
+            }
+        })
+    })
+        .catch(err => {
+            console.log(err);
+            res.json({ success: false, message: err });
+        })
+});
+
 /**
  * @swagger  
  * paths:

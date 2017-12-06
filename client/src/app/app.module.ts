@@ -15,6 +15,8 @@ import { LoginComponent } from './login/login.component'
 import { FormsModule } from '@angular/forms';
 import { GroupListComponent } from './group-list/group-list.component';
 import { EventComponent } from './event/event.component';
+import { InfoComponent } from './info/info.component';
+import { ReportComponent } from './report/report.component';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: '/', pathMatch: 'full' },
@@ -22,7 +24,9 @@ const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'groups', component: GroupListComponent },
   { path: 'events', component: EventListComponent },
-  { path: 'events/:id', component: EventComponent }
+  { path: 'events/:id', component: EventComponent },
+  { path: 'info', component: InfoComponent },
+  { path: 'reports', component: ReportComponent }
 ];
 
 @NgModule({
@@ -35,7 +39,9 @@ const appRoutes: Routes = [
     EventListComponent,
     LoginComponent,
     GroupListComponent,
-    EventComponent
+    EventComponent,
+    InfoComponent,
+    ReportComponent
   ],
   imports: [
     BrowserModule,
