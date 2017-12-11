@@ -90,7 +90,7 @@ router.post('/register', (req, res) => {
                         expiresIn: 60 * 60 * config.tokenExpiresInHours
                     });
 
-                    res.json({ success: true, token: token });
+                    res.json({ success: true, token: token, nickname: user.nickname });
                 } else {
                     res.json({ success: false, message: result.message });
                 }
@@ -661,7 +661,25 @@ router.post('/addGroup', (req, res) => {
 router.post('/joinGroup', (req, res) => {
     api.getPropertyFromToken(req, 'id').then(result => {
         let userId = result.message;
-        api.joinGroup(userId, req.body)
+        api.joinUserToGroupAndSetRole(userId, req.body)
+            .then(result => {
+                res.json(result);
+            })
+            .catch(err => {
+                console.log(err);
+                res.json(err);
+            })
+    })
+        .catch(err => {
+            console.log(err);
+            res.json({ success: false, message: err });
+        })
+})
+
+router.post('/unJoinGroup', (req, res) => {
+    api.getPropertyFromToken(req, 'id').then(result => {
+        let userId = result.message;
+        api.unJoinUserFromGroupAndRemoveRole(userId, req.body)
             .then(result => {
                 res.json(result);
             })

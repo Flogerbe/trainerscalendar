@@ -39,6 +39,15 @@ export class ApiService {
       .catch(this.handleError);
   }
 
+  public register(username: string, password: string, nickName: string): Observable<LoginResponse> {
+    return this.http
+      .post(API_URL + '/register', { username: username, password: password, nickname: nickName })
+      .map(response => {
+        return response;
+      })
+      .catch(this.handleError);
+  }
+
   public getUser(email: string): Observable<User[]> {
     return this.http
       .get<UserResponse>(API_URL + '/users/' + email, this.getToken())
@@ -104,6 +113,34 @@ export class ApiService {
       .catch(this.handleError);
   }
 
+  public joinGroup(groupId: string, userId: string): Observable<TrainingGroupsResponse> {
+    return this.http
+      .post<TrainingGroupsResponse>(API_URL + '/joinGroup', { groupId: groupId }, this.getToken())
+      .map(response => {
+        return  response.message;
+      })
+      .catch(this.handleError);
+  }
+
+  public unJoinGroup(groupId: string, userId: string): Observable<TrainingGroupsResponse> {
+    return this.http
+      .post<TrainingGroupsResponse>(API_URL + '/unJoinGroup', { groupId: groupId }, this.getToken())
+      .map(response => {
+        return  response.message;
+      })
+      .catch(this.handleError);
+  }
+
+  public getAllGroups(): Observable<TrainingGroup[]> {
+    return this.http
+      .get<TrainingGroupsResponse>(API_URL + '/groups', this.getToken())
+      .map(response => {
+        let groups = response.message;
+        return groups.map((group) => new TrainingGroup(group));
+      })
+      .catch(this.handleError);
+  }
+
   public getGroup(groupId: string): Observable<TrainingGroup> {
     return this.http
       .get<TrainingGroupResponse>(API_URL + '/groups/' + groupId, this.getToken())
@@ -113,9 +150,18 @@ export class ApiService {
       .catch(this.handleError);
   }
 
-  public getReportData(groupId: string): Observable<any> {
+  public getGroupReportData(groupId: string): Observable<any> {
     return this.http
       .get<CommonResponse>(API_URL + '/groupEvents/' + groupId, this.getToken())
+      .map(response => {
+        return response.message;
+      })
+      .catch(this.handleError);
+  }
+
+  public getUserReportData(groupId: string, userId: string): Observable<any> {
+    return this.http
+      .get<CommonResponse>(API_URL + '/userEvents/' + groupId + '/' + userId, this.getToken())
       .map(response => {
         return response.message;
       })

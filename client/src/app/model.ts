@@ -40,10 +40,12 @@ export class TrainingGroupResponse {
 export class TrainingGroup {
     id: string;
     name: string;
+    rolename: string
 
     constructor(opts: any) {
         this.id = opts.id;
         this.name = opts.name;
+        this.rolename = opts.rolename;
     }
 }
 
@@ -76,5 +78,12 @@ export class TrainigEvent {
         this.sleep = opts.sleep;
         this.remarks = opts.remarks;
     }
+}
+
+export class ReportData {
+    count: number;
+    stressLevelAverage: number;
+    nutritionAverage: number;
+    sleepAverage: number;
 }
 
