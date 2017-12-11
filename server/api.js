@@ -106,7 +106,7 @@ module.exports = class Api {
     addUser(email, password, nickname) {
         return new Promise((resolve, reject) => {
             let id = guid.raw();
-            let sql = `insert into userx (id,email,password,nickname)  values(?,?,?,?)`;
+            let sql = `insert into user (id,email,password,nickname)  values(?,?,?,?)`;
             this.db.serialize(() => {
                 this.db.run(sql, [id, email, password, nickname], function cb(err) {
                     if (err) {
@@ -183,9 +183,11 @@ module.exports = class Api {
 
     getUsersGroupsById(id) {
         return new Promise((resolve, reject) => {
-            var sql = `SELECT g.id,g.name FROM user u  
+            var sql = `SELECT g.id,g.name,r.name rolename FROM user u  
             join user_training_group ug on ug.user_id=u.id
             join training_group g on g.id=ug.group_id
+            join user_role_in_group urg on urg.group_id=g.id and urg.user_id=u.id
+            join role r on r.id=urg.role_id
             where u.id = ?
             `;
             this.db.serialize(() => {
@@ -361,7 +363,7 @@ module.exports = class Api {
 
     getUserEvents(groupId, id) {
         return new Promise((resolve, reject) => {
-            var sql = `select e.* from event e
+            var sql = `select e.*,u.nickname from event e
             join user u on u.id=e.user_id
             where u.id = ? and e.group_id=?`;
             this.db.serialize(() => {
@@ -380,7 +382,7 @@ module.exports = class Api {
         return new Promise((resolve, reject) => {
             var sql = `select e.*,u.nickname from event e
             join user u on u.id=e.user_id
-            where e.group_id=?`;
+            where e.group_id=? order by date_time desc`;
             this.db.serialize(() => {
                 this.db.all(sql, [groupId], function cb(err, rows) {
                     if (err) {
@@ -494,6 +496,102 @@ module.exports = class Api {
             let sql = `insert into training_group (id,name)  values(?,?)`;
             this.db.serialize(() => {
                 this.db.run(sql, [id, group.name], function cb(err) {
+                    if (err) {
+                        reject({ success: false, message: err });
+                    } else {
+                        resolve({ success: true, message: this.lastID });
+                    }
+                })
+            })
+        })
+    }
+
+    joinUserToGroupAndSetRole(userId, group) {
+        return new Promise((resolve, reject) => {
+            this.joinUserToGroup(userId, group.groupId).then(result => {
+                if (result.success) {
+                    this.setUserRoleInGroup(userId, group.groupId).then(result => {
+                        if (!result.success) {
+                            reject({ success: false, message: result.message });
+                        } else {
+                            resolve({ success: true, message: 'Joined.' });
+                        }
+                    })
+                }
+            })
+        });
+    }
+
+    unJoinUserFromGroupAndRemoveRole(userId, group) {
+        return new Promise((resolve, reject) => {
+            this.unJoinUserFromGroup(userId, group.groupId).then(result => {
+                if (result.success) {
+                    this.removeUserRoleFromGroup(userId, group.groupId).then(result => {
+                        if (!result.success) {
+                            reject({ success: false, message: result.message });
+                        } else {
+                            resolve({ success: true, message: 'Unjoined.' });
+                        }
+                    })
+                }
+            })
+        });
+    }
+
+    joinUserToGroup(userId, groupId) {
+        return new Promise((resolve, reject) => {
+            let id = guid.raw();
+            let sql = `insert into user_training_group (id,user_id, group_id)  values(?,?,?)`;
+            this.db.serialize(() => {
+                this.db.run(sql, [id, userId, groupId], function cb(err) {
+                    if (err) {
+                        reject({ success: false, message: err });
+                    } else {
+                        resolve({ success: true, message: this.lastID });
+                    }
+                })
+            })
+        })
+    }
+
+    unJoinUserFromGroup(userId, groupId) {
+        return new Promise((resolve, reject) => {
+            let id = guid.raw();
+            let sql = `delete from user_training_group where user_id=? and group_id=?`;
+            this.db.serialize(() => {
+                this.db.run(sql, [userId, groupId], function cb(err) {
+                    if (err) {
+                        reject({ success: false, message: err });
+                    } else {
+                        resolve({ success: true, message: this.lastID });
+                    }
+                })
+            })
+        })
+    }
+
+    setUserRoleInGroup(userId, groupId) {
+        return new Promise((resolve, reject) => {
+            let id = guid.raw();
+            let sql = `insert into user_role_in_group (id,user_id, group_id, role_id)  values(?,?,?,
+                            (select id from role where name='swimmer'))`;
+            this.db.serialize(() => {
+                this.db.run(sql, [id, userId, groupId], function cb(err) {
+                    if (err) {
+                        reject({ success: false, message: err });
+                    } else {
+                        resolve({ success: true, message: this.lastID });
+                    }
+                })
+            })
+        })
+    }
+
+    removeUserRoleFromGroup(userId, groupId) {
+        return new Promise((resolve, reject) => {
+            let sql = `delete from user_role_in_group where user_id=? and group_id=?`;
+            this.db.serialize(() => {
+                this.db.run(sql, [userId, groupId], function cb(err) {
                     if (err) {
                         reject({ success: false, message: err });
                     } else {

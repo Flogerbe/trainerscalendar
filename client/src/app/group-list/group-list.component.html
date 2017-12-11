@@ -1,15 +1,38 @@
-<div class='border-bottom pt-2'>
+<div class='border-bottom pt-2 mb-2'>
   <h5>
     Ryhmät
+    <button [routerLink]="['/groups', 'new']" class='btn btn-success btn-primary-spacing'>
+      <i class="fa fa-plus-circle fa-1x" aria-hidden="true"></i> Uusi</button>
   </h5>
 </div>
-<div class='container col-4 col-md-2 pt-1'>
+<div class='border-bottom pt-2'>
+  <h5>
+    Omat ryhmät
+  </h5>
+</div>
+<div class='container col-8 col-md-2 pt-1'>
   <div *ngFor="let group of groups" class='row pb-1'>
+    <div class='col col-4 text-align-left'>
+      {{ group.name }}
+    </div>
     <div class='col col-8 text-align-left'>
+      <button (click)='goToEvents(group.id)' class='btn btn-success btn-primary-spacing'>Valitse</button>
+      <button (click)='unJoinGroup(group.id)' class='btn btn-success btn-primary-spacing'>Eroa</button>
+    </div>
+  </div>
+</div>
+<div class='border-bottom pt-2'>
+  <h5>
+    Muut ryhmät
+  </h5>
+</div>
+<div class='container col-8 col-md-2 pt-1'>
+  <div *ngFor="let group of getGroupsNotJoinedIn()" class='row pb-1'>
+    <div class='col col-4 text-align-left'>
       {{ group.name }}
     </div>
     <div class='col col-4 text-align-left'>
-      <button (click)='goToEvents(group.id)' class='btn btn-success btn-primary-spacing'>Valitse</button>
+      <button (click)='joinGroup(group.id)' class='btn btn-success btn-primary-spacing'>Liity</button>
     </div>
   </div>
 </div>
