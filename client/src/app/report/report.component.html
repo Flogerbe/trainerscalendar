@@ -1,0 +1,52 @@
+<div class="form-group col-10 col-md-4 offset-md-4 pt-2">
+  <div class="input-group mb-2">
+    <label class='col-6 pr-2' for="startDateString">Alku pvm:</label>
+    <input class="form-control" name='startDateString' [(ngModel)]="startDateString">
+    <input class="form-control" hidden placeholder="dd-mm-yyyy" name="startdp" [(ngModel)]="startDate" (ngModelChange)="onStartDateChange($event)"
+      ngbDatepicker #ds="ngbDatepicker">
+    <button class="input-group-addon" (click)="ds.toggle()" type="button">
+      <i class="fa fa-calendar" aria-hidden="true"></i>
+    </button>
+  </div>
+  <div class="input-group mb-2">
+    <label class='col-6 pr-2' for="endDateString">Loppu pvm:</label>
+    <input class="form-control" name='endDateString' [(ngModel)]="endDateString">
+    <input class="form-control" hidden placeholder="dd-mm-yyyy" name="enddp" [(ngModel)]="endDate" (ngModelChange)="onEndDateChange($event)"
+      ngbDatepicker #de="ngbDatepicker">
+    <button class="input-group-addon" (click)="de.toggle()" type="button">
+      <i class="fa fa-calendar" aria-hidden="true"></i>
+    </button>
+  </div>
+  <div *ngIf='roleName=="coach"' class="input-group">
+      <label class='col-4 pr-2'>Uimari:</label>
+      <select class="form-control" [ngModel]="selectedUser" (ngModelChange)="onUserChange($event)">
+      <option *ngFor="let user of groupUsers">{{user}}</option>
+    </select>
+  </div>
+</div>
+<div>
+  <div>
+    <h4>Yhteenveto (ka):</h4>
+  </div>
+  <div>
+    Rasitustaso: {{reportData.stressLevelAverage}}
+  </div>
+  <div>
+    Syöminen: {{reportData.nutritionAverage}}
+  </div>
+  <div>
+    Nukkuminen: {{reportData.sleepAverage}}
+  </div>
+  <div>
+    Tapahtumia: {{reportData.count}}
+  </div>
+</div>
+<div class='mt-2'>
+  <h4>Tapahtumat:</h4>
+  <button (click)='downloadData()'>Lataa Exceliin</button>
+</div>
+<div *ngFor="let row of filteredEvents">
+  <div>
+    {{formatDate(row.date_time)}},{{row.nickname}},{{ row.swim_duration }},{{row.co_train_duration}},{{row.stress_level}},{{row.nutrition}},{{row.sleep}},{{row.remarks}}
+  </div>
+</div>

@@ -1,17 +1,31 @@
 <div class='container'>
-    <h1>Hero Form</h1>
-    <form (ngSubmit)='onSubmit()'>
-      <div class='form-group'>
-        <label for='name'>username</label>
-        <input type='text' class='form-control' name='username' [(ngModel)]='model.username'>
-      </div>
- 
-      <div class='form-group'>
-        <label for='alterEgo'>password</label>
-        <input type='text' class='form-control' name='password' [(ngModel)]='model.password'>
-      </div>
- 
-      <button type='submit' class='btn btn-success'>Submit</button>
- 
-    </form>
+  <h1>Kirjautuminen</h1>
+  <ngb-alert *ngIf="showAlert" type='danger' (close)="alertMessage = null">{{ alertMessage }}</ngb-alert>
+  <form>
+    <div *ngIf='!isLoggedIn()' class='form-group'>
+      <label for='name'>Tunnus (sähköposti)</label>
+      <input type='text' class='form-control' name='username' required [(ngModel)]='model.username'>
+    </div>
+
+    <div *ngIf='!isLoggedIn()' class='form-group'>
+      <label for='alterEgo'>Salasana</label>
+      <input type='password' class='form-control' name='password' required [(ngModel)]='model.password'>
+    </div>
+
+    <div *ngIf='!isLoggedIn()' class='form-group'>
+      <label for='alterEgo'>Lempinimi</label>
+      <input type='text' class='form-control' name='nickname' [(ngModel)]='model.nickname'>
+    </div>
+
+    <div *ngIf='!isLoggedIn()' class='form-group'>
+      <button *ngIf='!isLoggedIn()' type='button' class='btn btn-success mb-3' (click)='login()'>Kirjaudu</button>
+      tai
+      <button *ngIf='!isLoggedIn()' type='button' class='btn btn-success mb-3' (click)='register()'>Rekisteröidy</button>
+    </div>
+    <button *ngIf='isLoggedIn()' type='button' class='btn btn-success mb-3' (click)='logout()'>Kirjaudu ulos</button>
+    <div *ngIf='!isLoggedIn()'>
+      Jos sinulla ei ole vielä tunnusta, anna sähköpostiosoite, salasana ja lempinimi ja paina rekisteröidy.
+      <br> Jos sinulla on jo tunnus alla käyttäjätunnus (sähköpostiosoite) ja salsana ja paina Kirjaudu.
+    </div>
+  </form>
 </div>

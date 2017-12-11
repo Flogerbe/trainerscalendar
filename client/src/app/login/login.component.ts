@@ -1,10 +1,12 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ApiService } from '../api.service'
 import { AppComponent } from '../app.component';
+import { Router } from '@angular/router';
 
-interface LoginModel{
+class LoginModel{
     username: string;
-    password: string
+    password: string;
+    nickname: string;
 }
 
 @Component({
@@ -14,21 +16,48 @@ interface LoginModel{
   encapsulation: ViewEncapsulation.None,
 })
 export class LoginComponent implements OnInit {
-  model: LoginModel = { username: 'onni.pajumaki@live.fi', password: 'password' };
+  model: LoginModel;
+  alertMessage: string;
+  showAlert: boolean = false;
 
-  constructor(private app: AppComponent, private api: ApiService) {}
+  constructor(private app: AppComponent, private api: ApiService, private router: Router) {}
 
   ngOnInit() {
-  }
-
-  onSubmit(){
-      this.login();
+    this.model = new LoginModel();
   }
   
   login(){
     this.api.login(this.model.username,this.model.password).subscribe(result => {
-      this.app.title = result.nickname;
-      localStorage.setItem('TrainingCalendarData', JSON.stringify({ userId: result.userId, nickname: result.nickname, token: result.token }));
+      if (result.success){
+        this.app.title = result.nickname;
+        localStorage.setItem('TrainingCalendarData', JSON.stringify({ userId: result.userId, nickname: result.nickname, token: result.token }));
+        this.router.navigate(['/groups']);
+      } else {
+        this.showAlert = true;
+        this.alertMessage = 'Kirjautuminen epäonnistui';
+      }
     });
+  }
+
+  register(){
+    this.api.register(this.model.username,this.model.password, this.model.nickname).subscribe(result => {
+      if (result.success){
+        this.app.title = result.nickname;
+        localStorage.setItem('TrainingCalendarData', JSON.stringify({ userId: result.userId, nickname: result.nickname, token: result.token }));
+        this.router.navigate(['/groups']);
+      } else {
+        this.showAlert = true;
+        this.alertMessage = 'Kirjautuminen epäonnistui';
+      }
+    });
+  }
+
+  logout(){
+    this.app.title = '';
+    this.api.setToStorage('token', '');
+  }
+
+  isLoggedIn() {
+    return this.api.getFromStorage('token') != '';
   }
 }

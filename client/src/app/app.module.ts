@@ -15,14 +15,20 @@ import { LoginComponent } from './login/login.component'
 import { FormsModule } from '@angular/forms';
 import { GroupListComponent } from './group-list/group-list.component';
 import { EventComponent } from './event/event.component';
+import { InfoComponent } from './info/info.component';
+import { ReportComponent } from './report/report.component';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: '/', pathMatch: 'full' },
   { path: 'home', redirectTo: '/', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'groups', component: GroupListComponent },
+  { path: 'groups/:id', component: GroupComponent },
   { path: 'events', component: EventListComponent },
-  { path: 'events/:id', component: EventComponent }
+  { path: 'events/:id', component: EventComponent },
+  { path: 'info', component: InfoComponent },
+  { path: 'reports', component: ReportComponent }
 ];
 
 @NgModule({
@@ -35,7 +41,9 @@ const appRoutes: Routes = [
     EventListComponent,
     LoginComponent,
     GroupListComponent,
-    EventComponent
+    EventComponent,
+    InfoComponent,
+    ReportComponent
   ],
   imports: [
     BrowserModule,
@@ -46,7 +54,7 @@ const appRoutes: Routes = [
       { enableTracing: true } // <-- debugging purposes only
     ),
     FormsModule,
-    NgbModule.forRoot()
+    BsDropdownModule.forRoot()
   ],
   providers: [ApiService],
   bootstrap: [AppComponent]
