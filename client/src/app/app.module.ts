@@ -18,6 +18,7 @@ import { EventComponent } from './event/event.component';
 import { InfoComponent } from './info/info.component';
 import { ReportComponent } from './report/report.component';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { GroupComponent } from './group/group.component';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: '/', pathMatch: 'full' },
@@ -43,7 +44,8 @@ const appRoutes: Routes = [
     GroupListComponent,
     EventComponent,
     InfoComponent,
-    ReportComponent
+    ReportComponent,
+    GroupComponent
   ],
   imports: [
     BrowserModule,

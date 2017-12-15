@@ -1,0 +1,9 @@
+<div class='container-fluid'>
+    <form (ngSubmit)='onSubmit()'>
+      <div class="form-group col-8 col-md-4 offset-2 offset-md-4">
+        <label class="float-left" for='swimStressLevel'>Nimi:</label>
+        <input type="text" class="form-control ml-3 mr-3" name='remarks' [(ngModel)]="group.name">
+      </div>
+      <button type='submit' class='btn btn-success'>Submit</button>
+    </form>
+  </div>

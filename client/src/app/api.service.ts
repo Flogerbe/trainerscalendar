@@ -103,6 +103,33 @@ export class ApiService {
       .catch(this.handleError);
   }
 
+  public addGroup(group: TrainingGroup): Observable<string> {
+    return this.http
+      .post<CommonResponse>(API_URL + '/groups', group, this.getToken())
+      .map(response => {
+        return response.message;
+      })
+      .catch(this.handleError);
+  }
+
+  public updateGroup(groupId: string, group: TrainingGroup): Observable<string> {
+    return this.http
+      .put<CommonResponse>(API_URL + '/groups/' + groupId , event, this.getToken())
+      .map(response => {
+        return response.message;
+      })
+      .catch(this.handleError);
+  }
+
+  public deleteGroup(groupId: string): Observable<string> {
+    return this.http
+      .delete<CommonResponse>(API_URL + '/groups/' + groupId , this.getToken())
+      .map(response => {
+        return response.message;
+      })
+      .catch(this.handleError);
+  }
+
   public getGroups(userId: string): Observable<TrainingGroup[]> {
     return this.http
       .get<TrainingGroupsResponse>(API_URL + '/usersGroups/' + userId, this.getToken())

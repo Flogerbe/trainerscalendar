@@ -480,7 +480,7 @@ module.exports = class Api {
                 this.getGroupByRowid(result.message).then(result => {
                     let groupId = result.message[0].id;
                     this.getRoleByName('coach').then(result => {
-                        let roleId = result.message[0].id;
+                        let roleId = result.message.id;
                         this.addRoleInGroup(userId, groupId, roleId).then(result => {
                             resolve({ success: true, message: { id: groupId } });
                         })
