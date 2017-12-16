@@ -24,7 +24,7 @@ const appRoutes: Routes = [
   { path: 'home', redirectTo: '/', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'groups', component: GroupListComponent },
-  { path: 'groups/:id', component: GroupComponent },
+  //{ path: 'groups/:id', component: GroupComponent },
   { path: 'events', component: EventListComponent },
   { path: 'events/:id', component: EventComponent },
   { path: 'info', component: InfoComponent },
