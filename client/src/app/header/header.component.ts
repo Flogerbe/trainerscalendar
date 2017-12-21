@@ -10,19 +10,8 @@ import { ApiService } from '../api.service';
 })
 
 export class HeaderComponent implements OnInit {
-  label: string;
 
   constructor(private app: AppComponent, private api: ApiService) { }
 
-  ngOnInit() {
-    this.setLabel();
-  }
-
-  setLabel() {
-    let groupId = this.api.getFromStorage('groupId');
-    this.api.getGroup(groupId).subscribe(result => {
-      let label = this.api.getFromStorage('nickname');
-      this.label = label + result.name ? ' / ' + result.name : '';
-    });
-  }
+  ngOnInit() { }
 }

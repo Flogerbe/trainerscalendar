@@ -22,7 +22,7 @@ export class ReportComponent implements OnInit {
   endDate: Date;
   startDateString: string;
   endDateString: string;
-  groupUsers: string[] = ['Koko ryhmä', 'Onni'];
+  groupUsers: string[] = ['Koko ryhmä'];
   selectedUser: string = this.groupUsers[0];
   roleName: string;
 
@@ -30,27 +30,33 @@ export class ReportComponent implements OnInit {
 
   ngOnInit() {
     const data = JSON.parse(localStorage.getItem('TrainingCalendarData'));
+    this.groupId = data.groupId;
     this.roleName = this.api.getFromStorage('groupRoleName');
-
+    if (this.roleName == 'coach') {
+      this.api.getGroupsUsers(this.groupId).subscribe(result => {
+        let nicknames = result.map(r => r.nickname);
+        this.groupUsers = _.concat(this.groupUsers, nicknames);
+      });
+    }
     this.userId = data.userId;
     this.groupId = data.groupId;
 
     if (this.userId && this.groupId) {
-      if (this.roleName == 'coach'){
+      if (this.roleName == 'coach') {
         this.api.getGroupReportData(this.groupId)
           .subscribe(result => {
             this.events = result;
             this.filteredEvents = this.events;
             this.calculateReportData();
           });
-        } else {
-          this.api.getUserReportData(this.groupId, this.userId)
+      } else {
+        this.api.getUserReportData(this.groupId, this.userId)
           .subscribe(result => {
             this.events = result;
             this.filteredEvents = this.events;
             this.calculateReportData();
-          });          
-        }
+          });
+      }
     }
   }
 
@@ -124,19 +130,22 @@ export class ReportComponent implements OnInit {
     return result;
   }
 
-  formatDate(date: Date): string{
+  formatDate(date: Date): string {
     return moment(date).format('DD.MM.YYYY');
   }
 
   downloadData() {
     let today: string = moment().format('DD.MM.YYYY');
-    let exportEvents = _.map(this.events, (e) => { return  { 
-      Pvm:  moment(e.date_time).format('DD.MM.YYYY'), Henkilö: e.nickname, 'Uinnin kesto': e.swim_duration, 'Kuivan kesto': e.co_train_duration, Rasitus: e.stress_level, 
-      Ruoka: e.nutrition, Uni: e.sleep }})
+    let exportEvents = _.map(this.events, (e) => {
+      return {
+        Pvm: moment(e.date_time).format('DD.MM.YYYY'), Henkilö: e.nickname, 'Uinnin kesto': e.swim_duration, 'Kuivan kesto': e.co_train_duration, Rasitus: e.stress_level,
+        Ruoka: e.nutrition, Uni: e.sleep
+      }
+    })
     let csv = this.convertArrayOfObjectsToCSV({
-       data: exportEvents
+      data: exportEvents
     });
-    
+
     let blob = new Blob([csv], {
       type: "{ type: 'text/csv;charset=utf-8;' }"
     });

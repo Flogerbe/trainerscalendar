@@ -67,7 +67,6 @@ export class EventComponent implements OnInit {
       this.api.addEvent(this.event.id, this.event).subscribe(result => {
         this.router.navigate(['/events']);
       });
-
     }
   }
 }

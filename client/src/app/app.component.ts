@@ -22,10 +22,17 @@ export class AppComponent {
   }
 
   ngOnInit() {
+    this.setTitle();
+  }
+
+  setTitle() {
+    let nickname = this.api.getFromStorage('nickname');
     let groupId = this.api.getFromStorage('groupId');
-    this.api.getGroup(groupId).subscribe(result => {
-      this.title = this.api.getFromStorage('nickname') + ' / ' + result.name;
-      this.userName = this.api.getFromStorage('nickname');
-    });
+    if (groupId) {
+      this.api.getGroup(groupId).subscribe(result => {
+        this.title = nickname + (result.name ? ' / ' + result.name : '');
+      });
+    }
+    this.title = nickname;
   }
 }

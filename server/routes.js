@@ -324,8 +324,8 @@ router.get('/groups/:id', function (req, res) {
  *         200:
  *           description: An array of users in groups
 */
-router.get('/groupsUsers/:id', function (req, res) {
-    let groupId = req.params.id;
+router.get('/groupsUsers/:groupId', function (req, res) {
+    let groupId = req.params.groupId;
 
     // get id of authenticated user (from token)
     api.getPropertyFromToken(req, 'id').then(result => {
@@ -588,47 +588,6 @@ router.post('/groups', (req, res) => {
                 res.json(err);
             })
         })
-        .catch(err => {
-            console.log(err);
-            res.json({ success: false, message: err });
-        })
-})
-
-/**
- * @swagger  
- * paths:
- *   /api/addGroup:
- *     post:
- *       tags:
- *         - Groups
- *       description: Add new group. Creator becomes a coach of group.
- *       produces:
- *         - application/json
- *       parameters:
- *         - group: group
- *           description: Group to join
- *           in: body
- *           required: true
- *           schema:
- *             $ref: "#/definitions/GroupJoin"
- *       security:
- *         - api_key: []
- *       responses:
- *         200:
- *           description: Rowid of new group
-*/
-router.post('/addGroup', (req, res) => {
-    api.getPropertyFromToken(req, 'id').then(result => {
-        let userId = result.message;
-        api.addGroupAndSetCoach(userId, req.body)
-            .then(result => {
-                res.json(result);
-            })
-            .catch(err => {
-                console.log(err);
-                res.json(err);
-            })
-    })
         .catch(err => {
             console.log(err);
             res.json({ success: false, message: err });

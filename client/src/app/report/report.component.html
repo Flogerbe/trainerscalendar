@@ -1,6 +1,6 @@
 <div class="form-group col-10 col-md-4 offset-md-4 pt-2">
   <div class="input-group mb-2">
-    <label class='col-6 pr-2' for="startDateString">Alku pvm:</label>
+    <label class='col-6 pr-2 float-left' for="startDateString">Alku pvm:</label>
     <input class="form-control" name='startDateString' [(ngModel)]="startDateString">
     <input class="form-control" hidden placeholder="dd-mm-yyyy" name="startdp" [(ngModel)]="startDate" (ngModelChange)="onStartDateChange($event)"
       ngbDatepicker #ds="ngbDatepicker">
@@ -9,7 +9,7 @@
     </button>
   </div>
   <div class="input-group mb-2">
-    <label class='col-6 pr-2' for="endDateString">Loppu pvm:</label>
+    <label class='col-6 pr-2 float-left' for="endDateString">Loppu pvm:</label>
     <input class="form-control" name='endDateString' [(ngModel)]="endDateString">
     <input class="form-control" hidden placeholder="dd-mm-yyyy" name="enddp" [(ngModel)]="endDate" (ngModelChange)="onEndDateChange($event)"
       ngbDatepicker #de="ngbDatepicker">
