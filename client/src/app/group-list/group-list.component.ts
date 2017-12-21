@@ -44,7 +44,6 @@ export class GroupListComponent implements OnInit {
     let userId = data.userId;
 
     this.api.joinGroup(groupId, userId).subscribe(result => {
-      this.app.title = this.api.getFromStorage('nickname');
       this.initGroups(userId);
     })
   }
@@ -54,22 +53,20 @@ export class GroupListComponent implements OnInit {
     let userId = data.userId;
 
     this.api.unJoinGroup(groupId, userId).subscribe(result => {
-      this.app.title = this.api.getFromStorage('nickname');
       this.initGroups(userId);
     })
   }
 
   goToEvents(id: string){
-    this.app.currentState.groupId = id;
     let roleName = _.find(this.groups, { 'id': id }).rolename;
     this.api.setToStorage('groupRoleName', roleName);
     this.api.setToStorage('groupId', id);
+    this.app.setTitle();
 
     if (roleName == 'coach'){ 
       this.router.navigate(['/reports']);
     } else {
       this.api.getGroup(id).subscribe(result => {
-        this.app.title = this.api.getFromStorage('nickname') + ' / ' + result.name;
         this.api.setToStorage('groupId', id);
         this.router.navigate(['/events']);
       })

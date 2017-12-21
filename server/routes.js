@@ -324,8 +324,8 @@ router.get('/groups/:id', function (req, res) {
  *         200:
  *           description: An array of users in groups
 */
-router.get('/groupsUsers/:id', function (req, res) {
-    let groupId = req.params.id;
+router.get('/groupsUsers/:groupId', function (req, res) {
+    let groupId = req.params.groupId;
 
     // get id of authenticated user (from token)
     api.getPropertyFromToken(req, 'id').then(result => {

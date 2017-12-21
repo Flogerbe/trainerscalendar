@@ -34,7 +34,6 @@ export class GroupComponent implements OnInit {
   }
 
   save() {
-    debugger;
     if (this.group.id) {
       this.api.updateGroup(this.group.id, this.group).subscribe(result => {
         this.router.navigate(['/groups']);

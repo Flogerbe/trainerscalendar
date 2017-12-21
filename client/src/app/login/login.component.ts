@@ -29,8 +29,8 @@ export class LoginComponent implements OnInit {
   login(){
     this.api.login(this.model.username,this.model.password).subscribe(result => {
       if (result.success){
-        this.app.title = result.nickname;
         localStorage.setItem('TrainingCalendarData', JSON.stringify({ userId: result.userId, nickname: result.nickname, token: result.token }));
+        this.app.setTitle();
         this.router.navigate(['/groups']);
       } else {
         this.showAlert = true;
@@ -42,8 +42,8 @@ export class LoginComponent implements OnInit {
   register(){
     this.api.register(this.model.username,this.model.password, this.model.nickname).subscribe(result => {
       if (result.success){
-        this.app.title = result.nickname;
         localStorage.setItem('TrainingCalendarData', JSON.stringify({ userId: result.userId, nickname: result.nickname, token: result.token }));
+        this.app.setTitle();
         this.router.navigate(['/groups']);
       } else {
         this.showAlert = true;
@@ -53,7 +53,6 @@ export class LoginComponent implements OnInit {
   }
 
   logout(){
-    this.app.title = '';
     this.api.setToStorage('token', '');
   }
 

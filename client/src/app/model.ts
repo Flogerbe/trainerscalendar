@@ -12,7 +12,7 @@ export class User {
 
 export class UserResponse {
     success: boolean;
-    message: object;
+    message: object[];
 }
 
 export class CommonResponse {

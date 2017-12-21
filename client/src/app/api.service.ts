@@ -26,7 +26,7 @@ export class ApiService {
 
   private getToken(): object {
     return {
-      headers: new HttpHeaders().set('token', JSON.parse(localStorage.getItem('TrainingCalendarData')).token)
+      headers: new HttpHeaders().set('token', this.getFromStorage('token'))
     }
   }
 
@@ -53,6 +53,16 @@ export class ApiService {
       .get<UserResponse>(API_URL + '/users/' + email, this.getToken())
       .map(response => {
         return new User(response.message);
+      })
+      .catch(this.handleError);
+  }
+
+  public getGroupsUsers(groupId: string): Observable<User[]> {
+    return this.http
+      .get<UserResponse>(API_URL + '/groupsUsers/' + groupId, this.getToken())
+      .map(response => {
+        let users = response.message;
+        return users.map(user => new User(user));
       })
       .catch(this.handleError);
   }
@@ -207,5 +217,21 @@ export class ApiService {
     }
     console.error(errMsg);
     return Observable.throw(errMsg);
+  }
+
+  public setCurrentUser(userId: string){
+    this.setToStorage('userId', userId);
+  }
+
+  public getCurrentUser():string{
+    return this.getFromStorage('userId');
+  }
+
+  public setCurrentGroup(groupId: string){
+    this.setToStorage('groupId', groupId);
+  }
+
+  public getCurrentGroup(): string {
+    return this.getFromStorage('groupId');
   }
 }

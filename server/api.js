@@ -479,10 +479,12 @@ module.exports = class Api {
             let idPromise = this.addGroup(group).then(result => {
                 this.getGroupByRowid(result.message).then(result => {
                     let groupId = result.message[0].id;
-                    this.getRoleByName('coach').then(result => {
-                        let roleId = result.message.id;
-                        this.addRoleInGroup(userId, groupId, roleId).then(result => {
-                            resolve({ success: true, message: { id: groupId } });
+                    this.joinUserToGroup(userId, groupId).then(result => {
+                        this.getRoleByName('coach').then(result => {
+                            let roleId = result.message.id;
+                            this.addRoleInGroup(userId, groupId, roleId).then(result => {
+                                resolve({ success: true, message: { id: groupId } });
+                            })
                         })
                     })
                 })
