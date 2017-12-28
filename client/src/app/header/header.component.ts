@@ -11,7 +11,11 @@ import { ApiService } from '../api.service';
 
 export class HeaderComponent implements OnInit {
 
+  title: string = '';
+
   constructor(private app: AppComponent, private api: ApiService) { }
 
-  ngOnInit() { }
+  ngOnInit() { 
+    this.title = this.app.title;
+  }
 }
