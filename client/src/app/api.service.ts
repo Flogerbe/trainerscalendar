@@ -15,7 +15,12 @@ export class ApiService {
   constructor(private http: HttpClient) { }
   
   public getFromStorage(id){
-    return JSON.parse(localStorage.getItem('TrainingCalendarData'))[id];
+    let ret = ''; 
+    if (localStorage.getItem('TrainingCalendarData')) {
+      ret = JSON.parse(localStorage.getItem('TrainingCalendarData'))[id];
+    }
+
+    return ret;
   }
 
   public setToStorage(id: string, value: string){

@@ -8,7 +8,7 @@ import { ApiService } from './api.service';
 })
 
 export class AppComponent {
-  title = '';
+  public title = '';
   userName = '';
   isCoach = false;
   currentState = { userId: '', groupId: '' };
