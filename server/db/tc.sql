@@ -1,4 +1,11 @@
+DROP TABLE event;
+DROP TABLE user_role_in_group;
+DROP TABLE user_training_group;
+DROP TABLE training_group;
+DROP TABLE user_role;
+DROP TABLE role;
 DROP TABLE user;
+
 CREATE TABLE user 
 (
    id             char(50) primary key not null,
@@ -7,14 +14,12 @@ CREATE TABLE user
    password       char(50) not null
 );
 
-DROP TABLE role;
 CREATE TABLE role 
 (
    id         char(50) primary key not null,
    name       char(50) not null
 );
 
-DROP TABLE user_role;
 CREATE TABLE user_role 
 (
    id         char(50) primary key not null,
@@ -24,14 +29,12 @@ CREATE TABLE user_role
    FOREIGN KEY(role_id) REFERENCES role(id)
 );
 
-DROP TABLE training_group;
 CREATE TABLE training_group 
 (
    id         char(50) primary key not null,
    name       char(50) not null
 );
 
-DROP TABLE user_training_group;
 CREATE TABLE user_training_group 
 (
    id         char(50) primary key not null,
@@ -41,7 +44,6 @@ CREATE TABLE user_training_group
    FOREIGN KEY(group_id) REFERENCES training_group(id)
 );
 
-DROP TABLE user_role_in_group;
 CREATE TABLE user_role_in_group 
 (
    id         char(50) primary key not null,
@@ -53,7 +55,6 @@ CREATE TABLE user_role_in_group
    FOREIGN KEY(role_id) REFERENCES user_role(id)
 );
 
-DROP TABLE event;
 CREATE TABLE event 
 (
    id                 char(50) primary key not null,
@@ -71,8 +72,8 @@ CREATE TABLE event
 );
 
 -- INIT TEST DATA
-insert into user (id,nickname,email,password) values('4f569604-4c57-47b5-81b4-ff2281b26ef3','onni','onni.pajumaki@live.fi','5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8');
-insert into user (id,nickname,email,password) values('95ffe07b-88bd-483d-ac2e-52d0703c374b','timo','timo.pajumaki@live.com','5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8');
+insert into user (id,nickname,email,password) values('4f569604-4c57-47b5-81b4-ff2281b26ef3','swimmer1','swimmer1@ikm1.fi','5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8');
+insert into user (id,nickname,email,password) values('95ffe07b-88bd-483d-ac2e-52d0703c374b','coach_ikm1','coach@ikm1.fi','5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8');
 
 insert into role (id,name) values('3f56a760-241f-40ae-9823-9bdc00f5f16c','swimmer');
 insert into role (id,name) values('7beab832-8472-42d1-9372-690f73e5ae2d','coach');
