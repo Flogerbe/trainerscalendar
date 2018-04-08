@@ -6,6 +6,7 @@
         <i class="fa fa-plus-circle fa-1x" aria-hidden="true"></i> Uusi</button>
     </h5>
   </div>
+  <div *ngIf="groupId === undefined">Valitse ryhmä <a [routerLink]='"/groups"'>Ryhmät</a></div>
   <div *ngFor="let event of events" class='row pb-1'>
     <div class='col col-6 text-align-left'>
       {{ getDayOfWeek(event.date_time) }} {{ getDateStr(event.date_time) }}
